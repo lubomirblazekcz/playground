@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@theme {
+    --default-transition-property: color, background-color, border-color, outline-color, outline-offset, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, visibility, content-visibility, overlay, pointer-events;
+}
+
+x-popover {
+    position: absolute;
+    inset: auto;
+    position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+    transition-property: var(--default-transition-property);
+    transition-timing-function: var(--ease-in-out);
+    transition-duration: var(--default-transition-duration);
+    transition-behavior: allow-discrete;
+    will-change: transform;
+    scale: 0.75;
+    opacity: 0;
+
+    &:popover-open {
+        scale: 1;
+        opacity: 1;
+
+        @starting-style {
+            scale: 0.75;
+        }
+    }
+}
+
+@utility position-bottom {
+    position-area: block-end center;
+    transform-origin: top;
+}
+
+@utility position-bottom-start {
+    position-area: block-end span-inline-end;
+    transform-origin: top left;
+}
+
+@utility position-bottom-end {
+    position-area: block-end span-inline-start;
+    transform-origin: top right;
+}
+
+@utility position-top {
+    position-area: block-start center;
+    transform-origin: bottom;
+}
+
+@utility position-top-start {
+    position-area: block-start span-inline-end;
+    transform-origin: bottom left;
+}
+
+@utility position-top-end {
+    position-area: block-start span-inline-start;
+    transform-origin: bottom right;
+}
+
+@utility position-left {
+    position-area: inline-start center;
+    transform-origin: right;
+}
+
+@utility position-left-start {
+    position-area: inline-start span-block-end;
+    transform-origin: right top;
+}
+
+@utility position-left-end {
+    position-area: inline-start span-block-start;
+    transform-origin: right bottom;
+}
+
+@utility position-right {
+    position-area: inline-end center;
+    transform-origin: bottom;
+}
+
+@utility position-right-start {
+    position-area: inline-end span-block-end;
+    transform-origin: left top;
+}
+
+@utility position-right-end {
+    position-area: inline-end span-block-start;
+    transform-origin: left bottom;
+}
