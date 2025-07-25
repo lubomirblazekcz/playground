@@ -6,14 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
     <link href="/src/style.css" rel="stylesheet">
-    <script src="https://unpkg.com/invokers-polyfill@latest/invoker.min.js" type="module" async></script>
+    <script src="/src/main.js" type="module" async></script>
   </head>
   <body class="p-4 pt-46 min-h-[300vh]">
     <main class="flex justify-center">
       <div class="relative w-fit">
         <button
           class="bg-amber-300 hover:bg-amber-400 p-2.5 rounded-md transition cursor-pointer"
-          command="toggle-popover"
+          command="--toggle-popover"
           commandfor="defaultPopover"
         >
           Show Popover
@@ -24,7 +24,7 @@
             popover
         >
           Popover
-        </x-popover-content>
+        </x-popover>
       </div>
     </main>
   </body>
