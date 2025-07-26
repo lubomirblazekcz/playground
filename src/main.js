@@ -4,7 +4,6 @@ import {
   DefaultElement,
   interestIsSupported,
 } from './utils.js'
-import { apply } from './interestfor-polyfill.js'
 
 if (!commandIsSupported) {
   const { apply } = await import('invokers-polyfill/fn')
