@@ -22,3 +22,21 @@ export class DefaultElement extends HTMLElement {
     })
   }
 }
+
+export const DefaultElementTest = (defaultClass) => {
+  return class DefaultElement extends defaultClass {
+    constructor() {
+      super()
+
+      this.addEventListener('command', (e) => {
+        e.preventDefault()
+
+        const method = e.command
+          .replace(/^--/, '')
+          .replace(/(-\w)/g, c => c[1].toUpperCase())
+
+        if (method in this) this[method](e)
+      })
+    }
+  }
+}

@@ -1,4 +1,10 @@
-import { anchorIsSupported, commandIsSupported, DefaultElement, interestIsSupported } from './utils.js'
+import {
+  anchorIsSupported,
+  commandIsSupported,
+  DefaultElement,
+  DefaultElementTest,
+  interestIsSupported,
+} from './utils.js'
 import { apply } from './interestfor-polyfill.js'
 
 if (!commandIsSupported) {
@@ -7,7 +13,7 @@ if (!commandIsSupported) {
   apply()
 }
 
-if (!interestIsSupported) {
+if (!interestIsSupported && document.querySelector('[interestfor]')) {
   const { apply } = await import('./interestfor-polyfill.js')
 
   apply()
@@ -28,7 +34,9 @@ customElements.define('x-popover', class extends DefaultElement {
     if (autoUpdate || !anchorIsSupported) {
       const { autoUpdatePopover } = await import('./popover/index.js')
 
-      await autoUpdatePopover(source, this, autoUpdate && JSON.parse(this.dataset.autoUpdate))
+      console.log(this.dataset.autoUpdate || 's')
+
+      await autoUpdatePopover(source, this, this.dataset.placement, JSON.parse(this.dataset.autoUpdate || autoUpdate))
     }
 
     super.showPopover({ source })
