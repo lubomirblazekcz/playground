@@ -24,6 +24,7 @@ customElements.define('x-popover', class extends DefaultElement {
   connectedCallback() {
     this.addEventListener('toggle', (event) => {
       this.$open = event.newState === 'open'
+      if (this.$source.ariaExpanded) this.$source.ariaExpanded = this.$open
     })
   }
 
@@ -33,10 +34,10 @@ customElements.define('x-popover', class extends DefaultElement {
     if (autoUpdate || !anchorIsSupported) {
       const { autoUpdatePopover } = await import('./popover/index.js')
 
-      console.log(this.dataset.autoUpdate || 's')
-
       await autoUpdatePopover(source, this, this.dataset.placement, JSON.parse(this.dataset.autoUpdate || autoUpdate))
     }
+
+    this.$source = source
 
     super.showPopover({ source })
   }

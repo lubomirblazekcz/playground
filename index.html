@@ -13,8 +13,12 @@
       <div class="relative w-fit">
         <button
           class="bg-amber-300 hover:bg-amber-400 p-2.5 rounded-md transition cursor-pointer"
+          id="popoverTrigger"
           command="toggle-popover"
           commandfor="defaultPopover"
+          aria-haspopup="dialog"
+          aria-expanded="false"
+          aria-controls="defaultPopover"
         >
           Show Popover
         </button>
@@ -23,6 +27,8 @@
             id="defaultPopover"
             style="--x-popover-margin: calc(var(--spacing) * 3)"
             popover
+            role="dialog"
+            aria-labelledby="popoverTrigger"
         >
           Popover
         </x-popover>
@@ -32,6 +38,7 @@
         <button
           class="bg-amber-300 hover:bg-amber-400 p-2.5 rounded-md transition cursor-pointer"
           interestfor="hoverPopover"
+          aria-describedby="hoverPopover"
         >
           Show Tooltip
         </button>
