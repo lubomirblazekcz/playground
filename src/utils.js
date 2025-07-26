@@ -1,11 +1,18 @@
-export const commandIsSupported = 'command' in HTMLButtonElement.prototype
+export const supportsCommand = 'command' in HTMLButtonElement.prototype
   && 'source' in ((globalThis.CommandEvent || {}).prototype || {})
 
-export const interestIsSupported = Object.prototype.hasOwnProperty.call(HTMLButtonElement.prototype,
+export const supportsInterest = Object.prototype.hasOwnProperty.call(HTMLButtonElement.prototype,
   'interestForElement',
 )
 
-export const anchorIsSupported = CSS.supports('anchor-name', '--')
+export const supportsAnchor = CSS.supports('anchor-name', '--')
+
+export const supportsIs = (name = 'is-supports') => {
+  class Element extends HTMLBRElement {}
+  customElements.define(name, Element, { extends: 'br' })
+
+  return document.createElement('br', { is: name }) instanceof Element
+}
 
 export const superConnect = (element) => {
   element.addEventListener('command', (e) => {

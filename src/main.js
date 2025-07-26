@@ -1,21 +1,32 @@
 import {
-  anchorIsSupported,
-  commandIsSupported,
+  supportsAnchor,
+  supportsCommand,
+  supportsInterest,
+  supportsIs,
   DefaultElement,
-  interestIsSupported,
 } from './utils.js'
 
-if (!commandIsSupported) {
+if (!supportsIs()) {
+  await import('@ungap/custom-elements')
+}
+
+if (!supportsCommand) {
   const { apply } = await import('invokers-polyfill/fn')
 
   apply()
 }
 
-if (!interestIsSupported && document.querySelector('[interestfor]')) {
+if (!supportsInterest && document.querySelector('[interestfor]')) {
   const { apply } = await import('./interestfor-polyfill.js')
 
   apply()
 }
+
+customElements.define('x-app', class extends HTMLBodyElement {
+  connectedCallback() {
+    console.log('x-app')
+  }
+}, { extends: 'body' })
 
 customElements.define('x-popover', class extends DefaultElement {
   $open = false
@@ -30,10 +41,10 @@ customElements.define('x-popover', class extends DefaultElement {
   async showPopover({ source }) {
     const autoUpdate = 'autoUpdate' in this.dataset
 
-    if (autoUpdate || !anchorIsSupported) {
+    if (autoUpdate || !supportsAnchor) {
       const { autoUpdatePopover } = await import('./popover/index.js')
 
-      await autoUpdatePopover(source, this, this.dataset.placement, JSON.parse(this.dataset.autoUpdate || autoUpdate))
+      this.$cleanup = await autoUpdatePopover(source, this, this.dataset.placement, JSON.parse(this.dataset.autoUpdate || autoUpdate))
     }
 
     this.$source = source
