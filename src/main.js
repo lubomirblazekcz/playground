@@ -1,7 +1,14 @@
-import { anchorIsSupported, commandIsSupported, DefaultElement } from './utils.js'
+import { anchorIsSupported, commandIsSupported, DefaultElement, interestIsSupported } from './utils.js'
+import { apply } from './interestfor-polyfill.js'
 
 if (!commandIsSupported) {
   const { apply } = await import('invokers-polyfill/fn')
+
+  apply()
+}
+
+if (!interestIsSupported) {
+  const { apply } = await import('./interestfor-polyfill.js')
 
   apply()
 }

@@ -1,6 +1,10 @@
 export const commandIsSupported = 'command' in HTMLButtonElement.prototype
   && 'source' in ((globalThis.CommandEvent || {}).prototype || {})
 
+export const interestIsSupported = Object.prototype.hasOwnProperty.call(HTMLButtonElement.prototype,
+  'interestForElement',
+)
+
 export const anchorIsSupported = CSS.supports('anchor-name', '--')
 
 export class DefaultElement extends HTMLElement {

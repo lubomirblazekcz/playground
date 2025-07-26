@@ -14,6 +14,7 @@ export const computePositionPopover = async (referenceElement, floatingElement, 
 
   const { x, y, placement } = await computePosition(referenceElement, floatingElement, {
     middleware: options === true ? [flip()] : [],
+    placement: floatingElement.dataset.placement,
     ...options,
   })
 
