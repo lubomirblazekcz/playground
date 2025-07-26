@@ -2,7 +2,6 @@ import {
   anchorIsSupported,
   commandIsSupported,
   DefaultElement,
-  DefaultElementTest,
   interestIsSupported,
 } from './utils.js'
 import { apply } from './interestfor-polyfill.js'

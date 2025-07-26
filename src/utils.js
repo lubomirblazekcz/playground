@@ -7,36 +7,22 @@ export const interestIsSupported = Object.prototype.hasOwnProperty.call(HTMLButt
 
 export const anchorIsSupported = CSS.supports('anchor-name', '--')
 
+export const superConnect = (element) => {
+  element.addEventListener('command', (e) => {
+    e.preventDefault()
+
+    const method = e.command
+      .replace(/^--/, '')
+      .replace(/(-\w)/g, c => c[1].toUpperCase())
+
+    if (method in element) element[method](e)
+  })
+}
+
 export class DefaultElement extends HTMLElement {
   constructor() {
     super()
 
-    this.addEventListener('command', (e) => {
-      e.preventDefault()
-
-      const method = e.command
-        .replace(/^--/, '')
-        .replace(/(-\w)/g, c => c[1].toUpperCase())
-
-      if (method in this) this[method](e)
-    })
-  }
-}
-
-export const DefaultElementTest = (defaultClass) => {
-  return class DefaultElement extends defaultClass {
-    constructor() {
-      super()
-
-      this.addEventListener('command', (e) => {
-        e.preventDefault()
-
-        const method = e.command
-          .replace(/^--/, '')
-          .replace(/(-\w)/g, c => c[1].toUpperCase())
-
-        if (method in this) this[method](e)
-      })
-    }
+    superConnect(this)
   }
 }
