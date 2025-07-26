@@ -1,93 +1,37 @@
-import { animationsFinished, nextRepaint } from '../../common.js'
+import { anchorIsSupported } from '../utils.js'
 
 /**
- * @param {HTMLElement | Element} element
- * @param {HTMLElement | Element} popoverElement
+ * @param {HTMLElement | Element} referenceElement
+ * @param {HTMLElement | Element} floatingElement
  * @param {import("./").ShowPopoverOptions} options
  * @returns Promise<void>
  */
-export const computePopover = async (element, popoverElement, options = {}) => {
-    const { computePosition, flip, shift, offset } = await import('@floating-ui/dom')
+export const computePositionPopover = async (referenceElement, floatingElement, options = {}) => {
+  const { computePosition, flip } = await import('@floating-ui/dom')
 
-    popoverElement.classList.remove(popoverElement._placement)
+  floatingElement.classList.remove(floatingElement.$placement)
+  floatingElement.style.setProperty('--anchor-size', !anchorIsSupported ? `${referenceElement.offsetWidth}px` : '')
 
-    await computePosition(element, popoverElement, {
-        placement: options?.placement,
-        middleware: options?.middleware ?? [offset(options?.offset ?? 12), flip(options?.flip), shift({ padding: 8, ...options?.shift })],
-    }).then(({ x, y, placement }) => {
-        Object.assign(popoverElement.style, {
-            inset: `${y}px auto auto ${x}px`,
-        })
+  const { x, y, placement } = await computePosition(referenceElement, floatingElement, {
+    middleware: options === true ? [flip()] : [],
+    ...options,
+  })
 
-        popoverElement._placement = placement
-        popoverElement.classList.add(popoverElement._placement)
-    })
+  floatingElement.style.inset = !anchorIsSupported && `${y}px auto auto ${x}px`
+  floatingElement.classList.add(placement)
+  floatingElement.$placement = placement
 }
 
 /**
- * @param {HTMLElement | Element} element - The HTML content to insert into the dialog.
- * @param {import("./").HidePopoverOptions} options
- * @returns Promise<void>
- */
-export const hidePopover = async (element, options = { openAttribute: 'data-open' }) => {
-    const popoverElement = document.getElementById(element.getAttribute('popovertarget'))
-
-    popoverElement.removeAttribute(options?.openAttribute)
-    await animationsFinished(popoverElement)
-    popoverElement._cleanup && popoverElement._cleanup()
-    popoverElement.hidePopover && popoverElement.hidePopover()
-
-    element.ariaExpanded = 'false'
-}
-
-/**
- * @param {HTMLElement | Element} element
+ * @param {HTMLElement | Element} referenceElement
+ * @param {HTMLElement | Element} floatingElement
  * @param {import("./").ShowPopoverOptions} options
  * @returns Promise<void>
  */
-export const showPopover = async (element, options) => {
-    options = {
-        openAttribute: 'data-open',
-        compute: true,
-        ...options,
-    }
+export const autoUpdatePopover = async (referenceElement, floatingElement, options) => {
+  const { autoUpdate } = await import('@floating-ui/dom')
 
-    const { autoUpdate } = await import('@floating-ui/dom')
-
-    const popoverElement = document.getElementById(element.getAttribute('popovertarget'))
-
-    element.ariaExpanded = 'true'
-
-    if (!element.ariaHasPopup) (element.ariaHasPopup = 'dialog')
-    if (!popoverElement.role) (popoverElement.role = element.ariaHasPopup)
-
-    popoverElement.showPopover && popoverElement.showPopover()
-
-    await nextRepaint()
-
-    popoverElement.setAttribute(options?.openAttribute, '')
-
-    if (!options.compute) {
-        return
-    }
-
-    popoverElement._cleanup = autoUpdate(
-        element,
-        popoverElement,
-        async () => await computePopover(options.anchorSelector ? document.querySelector(options.anchorSelector) : element, popoverElement, options),
-    )
-}
-
-/**
- * @param {HTMLElement | Element} element
- * @param {import("./").ShowPopoverOptions} options
- * @returns Promise<void>
- */
-export const togglePopover = async (element, options) => {
-    if (element.ariaExpanded !== 'true') {
-        await showPopover(element, options)
-    }
-    else {
-        await hidePopover(element)
-    }
+  floatingElement.$cleanup = autoUpdate(referenceElement, floatingElement, () =>
+    computePositionPopover(referenceElement, floatingElement, options),
+  )
 }

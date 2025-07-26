@@ -1,33 +1,41 @@
-function isSupported() {
-    return (
-        typeof HTMLButtonElement !== "undefined" &&
-        "command" in HTMLButtonElement.prototype &&
-        "source" in ((globalThis.CommandEvent || {}).prototype || {})
-    )
+import { anchorIsSupported, commandIsSupported, DefaultElement } from './utils.js'
+
+if (!commandIsSupported) {
+  const { apply } = await import('invokers-polyfill/fn')
+
+  apply()
 }
 
-if (!isSupported()) {
-    const { apply } = await import('invokers-polyfill')
+customElements.define('x-popover', class extends DefaultElement {
+  $open = false
 
-    apply()
-}
-
-const superConnect = (self) => {
-    self.addEventListener("command", e => {
-        const method = e.command.slice(2)
-            .replace(/(-\w)/g, c => c[1].toUpperCase())
-
-        if (method in self) self[method](e)
+  connectedCallback() {
+    this.addEventListener('toggle', (event) => {
+      this.$open = event.newState === 'open'
     })
-}
+  }
 
-customElements.define("x-popover", class extends HTMLElement {
-    connectedCallback() {
-        superConnect(this)
-        console.log(this)
+  async showPopover({ source }) {
+    const autoUpdate = 'autoUpdate' in this.dataset
+
+    if (autoUpdate || !anchorIsSupported) {
+      const { autoUpdatePopover } = await import('./popover/index.js')
+
+      await autoUpdatePopover(source, this, autoUpdate && JSON.parse(this.dataset.autoUpdate))
     }
 
-    togglePopover() {
-        console.log('show')
-    }
+    super.showPopover({ source })
+  }
+
+  togglePopover({ source }) {
+    !this.$open
+      ? this.showPopover({ source })
+      : this.hidePopover()
+  }
+
+  hidePopover() {
+    this.$cleanup?.()
+
+    super.hidePopover()
+  }
 })

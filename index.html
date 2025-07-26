@@ -13,13 +13,13 @@
       <div class="relative w-fit">
         <button
           class="bg-amber-300 hover:bg-amber-400 p-2.5 rounded-md transition cursor-pointer"
-          command="--toggle-popover"
+          command="toggle-popover"
           commandfor="defaultPopover"
         >
           Show Popover
         </button>
         <x-popover
-            class="w-[anchor-size(inline)] position-bottom-end bg-white shadow-sm p-3 my-3"
+            class="w-(--anchor-size,anchor-size(inline)) bg-white shadow-sm p-3"
             id="defaultPopover"
             popover
         >
