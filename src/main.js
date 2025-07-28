@@ -50,7 +50,6 @@ customElements.define('x-popover',
     }
 
     async showPopover({ source }) {
-      console.dir(this)
       if (this.$autoUpdate || !supportsAnchor) {
         const { autoUpdatePopover } = await import('./popover/index.js')
 

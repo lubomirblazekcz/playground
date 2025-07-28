@@ -14,7 +14,7 @@ export const supportsIs = (name = 'is-supports') => {
   return document.createElement('br', { is: name }) instanceof Element
 }
 
-const typecast = (value) => {
+export const typecast = (value) => {
   try {
     return JSON.parse(value)
   }
@@ -23,16 +23,16 @@ const typecast = (value) => {
   }
 }
 
-const partSelector = (name, selector, nodeName) => (
+export const partSelector = (name, selector, nodeName) => (
   `[data-${nodeName}-part="${selector?.length > 0 ? selector : name.slice(1)}"]`
 )
 
-const querySelector = (host, selector) =>
+export const querySelector = (host, selector) =>
   [...host.querySelectorAll(selector)].filter(
     node => node.closest(host.nodeName) === host,
   )
 
-const defineCommand = (host, replacer = c => c[1].toUpperCase()) => {
+export const defineCommand = (host, replacer = c => c[1].toUpperCase()) => {
   host.addEventListener('command', (e) => {
     e.preventDefault()
 
@@ -46,7 +46,7 @@ const defineCommand = (host, replacer = c => c[1].toUpperCase()) => {
   })
 }
 
-const defineParts = (parts, host) => {
+export const defineParts = (parts, host) => {
   for (let [name, selector] of Object.entries(parts)) {
     const isArray = Array.isArray(selector)
 
@@ -62,7 +62,7 @@ const defineParts = (parts, host) => {
   }
 }
 
-const defineValues = (values, host) => {
+export const defineValues = (values, host) => {
   for (let [name, value] of Object.entries(values)) {
     Object.defineProperty(host, name, {
       get: () => {
