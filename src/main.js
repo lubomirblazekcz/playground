@@ -28,53 +28,58 @@ customElements.define('x-app', class extends HTMLBodyElement {
   }
 }, { extends: 'body' })
 
-customElements.define('x-popover', class extends DefaultElement {
-  $open = false
+customElements.define('x-popover',
+  /**
+   * @property {string} $placement
+   * @property {string} $test
+   * @property {HTMLElement|null} $test
+  */
+  class extends DefaultElement {
+    $open = false
 
-  static parts = {
-    $test: '@',
-  }
-
-  static values = {
-    $placement: 'left',
-    $dialog: 'modal',
-  }
-
-  connectedCallback() {
-    console.log(this.$placement)
-    console.log(this.$test)
-    this.addEventListener('toggle', (event) => {
-      this.$open = event.newState === 'open'
-      if (this.$source.ariaExpanded) this.$source.ariaExpanded = this.$open
-    })
-  }
-
-  async showPopover({ source }) {
-    const autoUpdate = 'autoUpdate' in this.dataset
-
-    if (autoUpdate || !supportsAnchor) {
-      const { autoUpdatePopover } = await import('./popover/index.js')
-
-      this.$cleanup = await autoUpdatePopover(source, this, this.dataset.placement, JSON.parse(this.dataset.autoUpdate || autoUpdate))
+    static parts = {
+      $test: '@',
     }
 
-    this.$source = source
+    static values = {
+      $placement: 'left',
+      $dialog: 'modal',
+    }
 
-    super.showPopover({ source })
-  }
+    connectedCallback() {
+      this.addEventListener('toggle', (event) => {
+        this.$open = event.newState === 'open'
+        if (this.$source.ariaExpanded) this.$source.ariaExpanded = this.$open
+      })
+    }
 
-  togglePopover({ source }) {
-    !this.$open
-      ? this.showPopover({ source })
-      : this.hidePopover()
-  }
+    async showPopover({ source }) {
+      const autoUpdate = 'autoUpdate' in this.dataset
 
-  hidePopover() {
-    this.$cleanup?.()
+      if (autoUpdate || !supportsAnchor) {
+        const { autoUpdatePopover } = await import('./popover/index.js')
 
-    super.hidePopover()
-  }
-})
+        this.$cleanup = await autoUpdatePopover(source, this, this.dataset.placement, JSON.parse(this.dataset.autoUpdate || autoUpdate))
+      }
+
+      this.$source = source
+
+      super.showPopover({ source })
+    }
+
+    togglePopover({ source }) {
+      !this.$open
+        ? this.showPopover({ source })
+        : this.hidePopover()
+    }
+
+    hidePopover() {
+      this.$cleanup?.()
+
+      super.hidePopover()
+    }
+  },
+)
 
 customElements.define('x-dialog', class extends HTMLDialogElement {
   connectedCallback() {
