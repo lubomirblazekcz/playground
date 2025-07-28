@@ -29,8 +29,10 @@
             popover
             role="dialog"
             aria-labelledby="popoverTrigger"
+            data-x-popover-placement-value="bottom"
         >
           Popover
+          <div data-x-popover-part="test"></div>
         </x-popover>
       </div>
 
@@ -67,6 +69,7 @@
         <dialog
           class="x-dialog p-6 max-w-132 w-full outline-0 rounded-md"
           id="defaultDialog"
+          is="x-dialog"
           closedby="any"
         >
           Dialog

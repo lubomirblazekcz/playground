@@ -3,7 +3,7 @@ import {
   supportsCommand,
   supportsInterest,
   supportsIs,
-  DefaultElement,
+  DefaultElement, superConnect,
 } from './utils.js'
 
 if (!supportsIs()) {
@@ -31,7 +31,18 @@ customElements.define('x-app', class extends HTMLBodyElement {
 customElements.define('x-popover', class extends DefaultElement {
   $open = false
 
+  static parts = {
+    $test: '@',
+  }
+
+  static values = {
+    $placement: 'left',
+    $dialog: 'modal',
+  }
+
   connectedCallback() {
+    console.log(this.$placement)
+    console.log(this.$test)
     this.addEventListener('toggle', (event) => {
       this.$open = event.newState === 'open'
       if (this.$source.ariaExpanded) this.$source.ariaExpanded = this.$open
@@ -64,3 +75,10 @@ customElements.define('x-popover', class extends DefaultElement {
     super.hidePopover()
   }
 })
+
+customElements.define('x-dialog', class extends HTMLDialogElement {
+  connectedCallback() {
+    superConnect(this)
+    console.log('x-dialog')
+  }
+}, { extends: 'dialog' })
