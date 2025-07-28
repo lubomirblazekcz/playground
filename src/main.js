@@ -1,10 +1,6 @@
-import {
-  supportsAnchor,
-  supportsCommand,
-  supportsInterest,
-  supportsIs,
-  WebuumElement,
-} from './utils.js'
+import { supportsAnchor } from './utils.js'
+import { supportsCommand, supportsInterest, supportsIs } from 'webuum/supports'
+import { initializeController, WebuumElement } from 'webuum'
 
 if (!supportsIs()) {
   await import('@webreflection/custom-elements-builtin')
@@ -23,6 +19,11 @@ if (!supportsInterest && document.querySelector('[interestfor]')) {
 }
 
 customElements.define('x-app', class extends HTMLBodyElement {
+  constructor() {
+    super()
+    initializeController(this)
+  }
+
   connectedCallback() {
     console.log('x-app')
   }

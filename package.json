@@ -24,6 +24,7 @@
     "@webreflection/custom-elements-builtin": "^0.4.1",
     "interestfor": "^1.0.3",
     "invokers-polyfill": "^0.5.5",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.11",
+    "webuum": "^0.0.2"
   }
 }
