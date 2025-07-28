@@ -7,7 +7,7 @@ import {
 } from './utils.js'
 
 if (!supportsIs()) {
-  await import('@ungap/custom-elements')
+  await import('@webreflection/custom-elements-builtin')
 }
 
 if (!supportsCommand) {
