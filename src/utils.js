@@ -14,77 +14,88 @@ export const supportsIs = (name = 'is-supports') => {
   return document.createElement('br', { is: name }) instanceof Element
 }
 
-export const superConnect = (element) => {
-  element.addEventListener('command', (e) => {
+const typecast = (value) => {
+  try {
+    return JSON.parse(value)
+  }
+  catch {
+    return value
+  }
+}
+
+const partSelector = (name, selector, nodeName) => (
+  `[data-${nodeName}-part="${selector?.length > 0 ? selector : name.slice(1)}"]`
+)
+
+const querySelector = (host, selector) =>
+  [...host.querySelectorAll(selector)].filter(
+    node => node.closest(host.nodeName) === host,
+  )
+
+const defineCommand = (host, replacer = c => c[1].toUpperCase()) => {
+  host.addEventListener('command', (e) => {
     e.preventDefault()
+
+    e.source.$value = typecast(e.source?.value)
 
     const method = e.command
       .replace(/^--/, '')
-      .replace(/(-\w)/g, c => c[1].toUpperCase())
+      .replace(/(-\w)/g, replacer)
 
-    if (method in element) element[method](e)
+    if (method in host) host[method](e)
   })
 }
 
-const partSelector = (name, selector, nodeName) => {
-  const prefix = `data-${nodeName}-part`
+const defineParts = (parts, host) => {
+  for (let [name, selector] of Object.entries(parts)) {
+    const isArray = Array.isArray(selector)
 
-  if (selector === '@') {
-    return `[${prefix}='${name.slice(1)}']`
-  }
-  else {
-    return selector.replace(/@([a-z-]+)/g, `[${prefix}='$1']`)
+    selector = partSelector(name, isArray ? selector[0] : selector, host.nodeName)
+
+    Object.defineProperty(host, name, {
+      get: () => {
+        const queryPart = querySelector(host, selector)
+
+        return isArray ? queryPart : queryPart[0] || null
+      },
+    })
   }
 }
 
-export class DefaultElement extends HTMLElement {
-  static parts
-  static values
+const defineValues = (values, host) => {
+  for (let [name, value] of Object.entries(values)) {
+    Object.defineProperty(host, name, {
+      get: () => {
+        const attribute = host.dataset[name.slice(1)]
 
+        return attribute ? typecast(attribute) : value
+      },
+      set: (value) => {
+        host.dataset[name.slice(1)] = value
+      },
+    })
+  }
+}
+
+export const initializeController = (host) => {
+  const parts = host.constructor.parts
+  const values = host.constructor.values
+
+  defineCommand(host)
+
+  if (parts) {
+    defineParts(parts, host)
+  }
+
+  if (values) {
+    defineValues(values, host)
+  }
+}
+
+export class WebuumElement extends HTMLElement {
   constructor() {
     super()
 
-    superConnect(this)
-
-    const parts = this.constructor.parts
-    const values = this.constructor.values
-
-    if (parts) {
-      for (let [name, selector] of Object.entries(parts)) {
-        if (Array.isArray(selector)) {
-          selector = partSelector(name, selector[0], this.nodeName)
-
-          Object.defineProperty(this, name, {
-            get: () =>
-              Array.from(this.querySelectorAll(selector)).filter(
-                node => node.closest(this.nodeName) === this,
-              ),
-          })
-        }
-        else {
-          selector = partSelector(name, selector, this.nodeName)
-
-          Object.defineProperty(this, name, {
-            get: () => {
-              const node = this.querySelector(selector)
-
-              return node && (node.closest(this.nodeName) === this) ? node : null
-            },
-          })
-        }
-      }
-    }
-
-    if (values) {
-      for (let [name, value] of Object.entries(values)) {
-        Object.defineProperty(this, name, {
-          get: () => {
-            const attribute = this.getAttribute(`data-${this.nodeName}-${name.slice(1)}-value`)
-
-            return attribute ? attribute : value
-          },
-        })
-      }
-    }
+    initializeController(this)
   }
 }

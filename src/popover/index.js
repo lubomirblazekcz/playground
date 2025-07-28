@@ -12,7 +12,7 @@ export const computePositionPopover = async (referenceElement, floatingElement, 
 
   const middleware = options === true ? [flip()] : []
 
-  floatingElement.classList.remove(floatingElement.$placement ?? placement)
+  floatingElement.classList.remove(floatingElement.$currentPlacement ?? placement)
   floatingElement.style.setProperty('--anchor-size', !supportsAnchor ? `${referenceElement.offsetWidth}px` : '')
 
   await computePosition(referenceElement, floatingElement, {
@@ -22,7 +22,7 @@ export const computePositionPopover = async (referenceElement, floatingElement, 
   }).then(({ x, y, placement }) => {
     floatingElement.style.inset = !supportsAnchor && `${y}px auto auto ${x}px`
     floatingElement.classList.add(placement)
-    floatingElement.$placement = placement
+    floatingElement.$currentPlacement = placement
   })
 }
 

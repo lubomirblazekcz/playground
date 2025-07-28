@@ -3,7 +3,7 @@ import {
   supportsCommand,
   supportsInterest,
   supportsIs,
-  DefaultElement, superConnect,
+  WebuumElement,
 } from './utils.js'
 
 if (!supportsIs()) {
@@ -31,35 +31,30 @@ customElements.define('x-app', class extends HTMLBodyElement {
 customElements.define('x-popover',
   /**
    * @property {string} $placement
-   * @property {string} $test
+   * @property {object|boolean} $autoUpdate
    * @property {HTMLElement|null} $test
   */
-  class extends DefaultElement {
+  class extends WebuumElement {
     $open = false
 
-    static parts = {
-      $test: '@',
-    }
-
     static values = {
-      $placement: 'left',
-      $dialog: 'modal',
+      $placement: null,
+      $autoUpdate: null,
     }
 
     connectedCallback() {
       this.addEventListener('toggle', (event) => {
         this.$open = event.newState === 'open'
-        if (this.$source.ariaExpanded) this.$source.ariaExpanded = this.$open
+        if (this.$source?.ariaExpanded) this.$source.ariaExpanded = this.$open
       })
     }
 
     async showPopover({ source }) {
-      const autoUpdate = 'autoUpdate' in this.dataset
-
-      if (autoUpdate || !supportsAnchor) {
+      console.dir(this)
+      if (this.$autoUpdate || !supportsAnchor) {
         const { autoUpdatePopover } = await import('./popover/index.js')
 
-        this.$cleanup = await autoUpdatePopover(source, this, this.dataset.placement, JSON.parse(this.dataset.autoUpdate || autoUpdate))
+        this.$cleanup = await autoUpdatePopover(source, this, this.$placement, this.$autoUpdate)
       }
 
       this.$source = source
@@ -80,10 +75,3 @@ customElements.define('x-popover',
     }
   },
 )
-
-customElements.define('x-dialog', class extends HTMLDialogElement {
-  connectedCallback() {
-    superConnect(this)
-    console.log('x-dialog')
-  }
-}, { extends: 'dialog' })
