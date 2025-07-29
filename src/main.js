@@ -1,22 +1,6 @@
 import { supportsAnchor } from './utils.js'
-import { supportsCommand, supportsInterest, supportsIs } from 'webuum/supports'
 import { initializeController, WebuumElement } from 'webuum'
-
-if (!supportsIs()) {
-  await import('@webreflection/custom-elements-builtin')
-}
-
-if (!supportsCommand) {
-  const { apply } = await import('invokers-polyfill/fn')
-
-  apply()
-}
-
-if (!supportsInterest && document.querySelector('[interestfor]')) {
-  const { apply } = await import('./interestfor-polyfill.js')
-
-  apply()
-}
+import './polyfill.js'
 
 customElements.define('x-app', class extends HTMLBodyElement {
   constructor() {
