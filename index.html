@@ -23,15 +23,17 @@
           Show Popover
         </button>
         <x-popover
-            class="w-(--anchor-size,anchor-size(inline)) bg-white shadow-sm p-3 bottom"
+            class="w-(--anchor-size,anchor-size(inline)) bottom"
             id="defaultPopover"
             style="--x-popover-margin: calc(var(--spacing) * 3)"
             popover
             role="dialog"
             aria-labelledby="popoverTrigger"
         >
-          Popover
-          <div data-x-popover-part="custom">asdf</div>
+          <x-popover-content class="bg-white shadow-sm p-3 my-(--x-popover-margin)">
+            Popover
+            <div data-x-popover-part="custom">asdf</div>
+          </x-popover-content>
         </x-popover>
       </div>
 

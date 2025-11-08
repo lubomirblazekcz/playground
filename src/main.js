@@ -22,7 +22,7 @@ customElements.define('x-popover',
   class extends WebuumElement {
     $open = false
 
-    static values = {
+    static props = {
       $placement: null,
       $autoUpdate: null,
     }
@@ -35,6 +35,7 @@ customElements.define('x-popover',
     }
 
     async showPopover({ source }) {
+      console.log(this.$autoUpdate)
       if (this.$autoUpdate || !supportsAnchor) {
         const { autoUpdatePopover } = await import('./popover/index.js')
 
