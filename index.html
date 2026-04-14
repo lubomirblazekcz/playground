@@ -25,12 +25,12 @@
         <x-popover
             class="w-(--anchor-size,anchor-size(inline)) bottom"
             id="defaultPopover"
-            style="--x-popover-margin: calc(var(--spacing) * 3)"
+            style="--margin: calc(var(--spacing) * 3)"
             popover
             role="dialog"
             aria-labelledby="popoverTrigger"
         >
-          <div class="x-popover-content bg-white shadow-sm p-3 my-(--x-popover-margin)">
+          <div class="x-popover-content bg-white shadow-sm p-3 my-(--margin)">
             Popover
             <div data-x-popover-part="custom">asdf</div>
           </div>
@@ -47,8 +47,8 @@
         </button>
 
         <x-popover
-          class="bg-white shadow-sm p-3 top"
-          style="--x-popover-margin: calc(var(--spacing) * 3)"
+          class="bg-white shadow-sm p-3 top my-(--margin)"
+          style="--margin: calc(var(--spacing) * 3)"
           id="hoverPopover"
           popover="hint"
           data-auto-update

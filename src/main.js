@@ -1,4 +1,4 @@
-import { supportsAnchor } from './utils.js'
+import { supportsAnchor, supportsAnchoredContainer } from './utils.js'
 import { initializeController, WebuumElement } from 'webuum'
 import './polyfill.js'
 
@@ -36,7 +36,7 @@ customElements.define('x-popover',
 
     async showPopover({ source }) {
       console.log(this.$autoUpdate)
-      if (this.$autoUpdate || !supportsAnchor) {
+      if ((this.$autoUpdate && !supportsAnchoredContainer) || !supportsAnchor) {
         const { autoUpdatePopover } = await import('./popover/index.js')
 
         this.$cleanup = await autoUpdatePopover(source, this, this.$placement, this.$autoUpdate)
