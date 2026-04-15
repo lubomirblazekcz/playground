@@ -214,4 +214,11 @@
   }
 }
 
+@utility invisible {
+  .x-popover-content:is(&) {
+    scale: var(--x-popover-content-starting-scale);
+    opacity: 0;
+  }
+}
+
 @source inline("bottom bottom-start bottom-end top top-start top-end left left-start left-end right right-start right-end");

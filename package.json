@@ -13,18 +13,18 @@
     "stylelint-fix": "stylelint '**/*.css' --fix"
   },
   "devDependencies": {
-    "@stylistic/eslint-plugin": "^5.2.2",
-    "@stylistic/stylelint-config": "^3.0.1",
-    "stylelint-config-standard": "^38.0.0",
-    "vite": "npm:rolldown-vite@latest"
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "@stylistic/stylelint-config": "^5.0.0",
+    "stylelint-config-standard": "^40.0.0",
+    "vite": "^8.0.8"
   },
   "dependencies": {
-    "@floating-ui/dom": "^1.7.2",
-    "@tailwindcss/vite": "^4.1.11",
+    "@floating-ui/dom": "^1.7.6",
+    "@tailwindcss/vite": "^4.2.2",
     "@webreflection/custom-elements-builtin": "^0.4.1",
-    "interestfor": "^1.0.3",
-    "invokers-polyfill": "^0.5.5",
-    "tailwindcss": "^4.1.11",
-    "webuum": "^0.0.13"
+    "interestfor": "^1.0.8",
+    "invokers-polyfill": "^1.0.3",
+    "tailwindcss": "^4.2.2",
+    "webuum": "^0.1.0"
   }
 }
