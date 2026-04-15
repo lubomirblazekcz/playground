@@ -60,3 +60,38 @@ customElements.define('x-popover',
     }
   },
 )
+
+customElements.define('x-carousel', class extends WebuumElement {
+  static parts = {
+      $content: null
+  }
+
+  $index = 0
+
+  connectedCallback() {
+    console.log(this)
+
+    this.$children = [...this.$content.children]
+
+    this.$content.addEventListener('scrollsnapchange', (event) => {
+      this.$index = this.$children.indexOf(event.snapTargetInline)
+    })
+  }
+
+  scrollTo(index) {
+    this.$children[index]?.scrollIntoView({
+      behavior: "smooth",
+      inline: "start",
+      block: "nearest",
+    });
+  }
+
+  scrollPrev() {
+    console.log('scrollPrev')
+    this.scrollTo(this.$index - 1)
+  }
+
+  scrollNext() {
+    this.scrollTo(this.$index + 1)
+  }
+})

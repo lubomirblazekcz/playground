@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./popover";
 @import "./dialog";
+@import "./carousel";
 
 @theme {
   --default-transition-property:
