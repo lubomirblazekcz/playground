@@ -8,10 +8,8 @@
  * @returns void
  */
 export const scrollBy = (element, { direction = 1, distance, position = 'left', ratio = 0.85 }) => {
-  distance ??= element.clientWidth * ratio
-
   element.scrollBy({
-    [position]: distance * direction
+    [position]: (distance ?? element.clientWidth * ratio) * direction
   })
 }
 
@@ -28,7 +26,7 @@ export const scrollBy = (element, { direction = 1, distance, position = 'left', 
 export const toggleScrollState = (element, { prevElement, nextElement, scrollStart, scrollEnd, scrollNone }) => {
   scrollStart ??= element.scrollLeft <= 0
   scrollEnd ??= element.scrollLeft >= element.scrollWidth - element.clientWidth
-  scrollNone ??= element.scrollWidth - element.clientWidth === 0
+  scrollNone ??= !(element.scrollWidth - element.clientWidth)
 
   if (prevElement) prevElement.disabled = scrollStart
   if (nextElement) nextElement.disabled = scrollEnd
@@ -45,7 +43,7 @@ export const toggleScrollState = (element, { prevElement, nextElement, scrollSta
  * @returns void
  */
 export const setCurrentAttribute = (element, index, attributeName = 'aria-current') => {
-  [...element.children].forEach(el => el.removeAttribute(attributeName))
+  for (const children of element.children) children.removeAttribute(attributeName)
   element.children[index].setAttribute(attributeName, 'true')
 }
 
@@ -62,7 +60,7 @@ export const setSnappedAttribute = (element, target, markerGroupElement) => {
 
   if (markerGroupElement) {
     const markerTarget = markerGroupElement.querySelector(`[href="#${target.id}"]`)
-    const index = element._markerIndex ?? (markerTarget ? [...markerGroupElement.children].indexOf(markerTarget) : snappedIndex)
+    const index = element._markerIndex ?? (markerTarget && [...markerGroupElement.children].indexOf(markerTarget)) ?? snappedIndex
 
     setCurrentAttribute(markerGroupElement, index)
   }
@@ -77,16 +75,13 @@ export const setSnappedAttribute = (element, target, markerGroupElement) => {
  * @returns void
  */
 export const scrollToMarker = (element, target, markerGroupElement) => {
-  const snappedTarget = document.getElementById(target.getAttribute('href').replace('#', ''))
+  const snappedTarget = document.getElementById(target.getAttribute('href').slice(1))
   const markerTargetIndex = [...markerGroupElement.children].indexOf(target)
-  const index = (snappedTarget ? [...element.children].indexOf(snappedTarget) : null) ?? markerTargetIndex
+  const index = snappedTarget ? [...element.children].indexOf(snappedTarget) : markerTargetIndex
 
-  element._markerIndex = markerTargetIndex;
+  element._markerIndex = markerTargetIndex
 
   setCurrentAttribute(markerGroupElement, markerTargetIndex)
 
-  element.children[index]?.scrollIntoView({
-    inline: "start",
-    block: "nearest"
-  });
+  element.children[index]?.scrollIntoView({ inline: 'start', block: 'nearest' })
 }
