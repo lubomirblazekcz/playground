@@ -43,7 +43,7 @@ export const toggleScrollState = (element, { prevElement, nextElement, scrollSta
  * @returns void
  */
 export const setCurrentAttribute = (element, index, attributeName = 'aria-current') => {
-  for (const children of element.children) children.removeAttribute(attributeName)
+  element.querySelector(`[${attributeName}]`)?.removeAttribute(attributeName)
   element.children[index].setAttribute(attributeName, 'true')
 }
 
@@ -51,7 +51,7 @@ export const setCurrentAttribute = (element, index, attributeName = 'aria-curren
  * @param {HTMLElement & { _markerIndex?: number | null }} element
  * @param {HTMLElement} target
  * @param {HTMLElement | null} markerGroupElement
- * @returns number
+ * @returns void
  */
 export const setSnappedAttribute = (element, target, markerGroupElement) => {
   const snappedIndex = [...element.children].indexOf(target)
@@ -63,9 +63,9 @@ export const setSnappedAttribute = (element, target, markerGroupElement) => {
     const index = element._markerIndex ?? (markerTarget && [...markerGroupElement.children].indexOf(markerTarget)) ?? snappedIndex
 
     setCurrentAttribute(markerGroupElement, index)
-  }
 
-  element._markerIndex = null
+    element._markerIndex = null
+  }
 }
 
 /**
