@@ -1,6 +1,6 @@
 import { supportsAnchor, supportsAnchoredContainer } from './utils.js'
 import { initializeController, WebuumElement } from 'webuum'
-import {scrollBy, scrollToMarker, setSnappedElement, toggleScrollState} from './carousel/index.js'
+import { scrollBy, scrollToMarker, setSnappedAttribute, setCurrentAttribute, toggleScrollState } from './carousel/index.js'
 import './polyfill.js'
 
 customElements.define('x-app', class extends HTMLBodyElement {
@@ -63,42 +63,23 @@ customElements.define('x-popover',
 )
 
 customElements.define('x-carousel', class extends WebuumElement {
-  static observedAttributes = ['data-index'];
-
   static parts = {
       $content: null,
       $markerGroup: null,
       $marker: null,
       $prev: null,
-      $next: null,
-      $counter: null
-  }
-
-  static props = {
-    $index: 0,
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'data-index') {
-      this.$counter.textContent = Number(newValue) + 1
-    }
-  }
-
-  setActiveIndex(index) {
-    this.$index = index
+      $next: null
   }
 
   connectedCallback() {
     this.$marker.forEach((element) => element.addEventListener('click', (event) => {
-      const index = scrollToMarker(this.$content, event.target, this.$markerGroup)
+      event.preventDefault()
 
-      this.setActiveIndex(index)
+      scrollToMarker(this.$content, event.target, this.$markerGroup)
     }))
 
     this.$content.addEventListener('scrollsnapchanging', (event) => {
-      const index = setSnappedElement(this.$content, event.snapTargetInline ?? event.snapTargetBlock, this.$markerGroup)
-
-      this.setActiveIndex(index)
+      setSnappedAttribute(this.$content, event.snapTargetInline ?? event.snapTargetBlock, this.$markerGroup)
     })
 
     this.$content.addEventListener('scroll', () => {

@@ -1,3 +1,12 @@
+/**
+ * @param {HTMLElement} element
+ * @param {object} options
+ * @param {number} [options.direction=1]
+ * @param {number} [options.distance]
+ * @param {'left' | 'top'} [options.position='left']
+ * @param {number} [options.ratio=0.85]
+ * @returns void
+ */
 export const scrollBy = (element, { direction = 1, distance, position = 'left', ratio = 0.85 }) => {
   distance ??= element.clientWidth * ratio
 
@@ -6,51 +15,71 @@ export const scrollBy = (element, { direction = 1, distance, position = 'left', 
   })
 }
 
+/**
+ * @param {HTMLElement} element
+ * @param {object} options
+ * @param {HTMLButtonElement | null} [options.prevElement]
+ * @param {HTMLButtonElement | null} [options.nextElement]
+ * @param {boolean} [options.scrollStart]
+ * @param {boolean} [options.scrollEnd]
+ * @param {boolean} [options.scrollNone]
+ * @returns void
+ */
 export const toggleScrollState = (element, { prevElement, nextElement, scrollStart, scrollEnd, scrollNone }) => {
   scrollStart ??= element.scrollLeft <= 0
   scrollEnd ??= element.scrollLeft >= element.scrollWidth - element.clientWidth
   scrollNone ??= element.scrollWidth - element.clientWidth === 0
 
-  if (prevElement && nextElement) {
-    prevElement.disabled = scrollStart
-    nextElement.disabled = scrollEnd
-  }
+  if (prevElement) prevElement.disabled = scrollStart
+  if (nextElement) nextElement.disabled = scrollEnd
 
   element.toggleAttribute('data-scroll-start', scrollStart)
   element.toggleAttribute('data-scroll-end', scrollEnd)
   element.toggleAttribute('data-scroll-none', scrollNone)
 }
 
-export const setActiveAttribute = (element, index, attributeName = 'data-current') => {
+/**
+ * @param {HTMLElement} element
+ * @param {number} index
+ * @param {string} [attributeName='data-current']
+ * @returns void
+ */
+export const setCurrentAttribute = (element, index, attributeName = 'aria-current') => {
   [...element.children].forEach(el => el.removeAttribute(attributeName))
-  element.children[index].setAttribute(attributeName, '')
+  element.children[index].setAttribute(attributeName, 'true')
 }
 
+/**
+ * @param {HTMLElement & { _markerIndex?: number | null }} element
+ * @param {HTMLElement} target
+ * @param {HTMLElement | null} markerGroupElement
+ * @returns number
+ */
+export const setSnappedAttribute = (element, target, markerGroupElement) => {
+  const snappedIndex = [...element.children].indexOf(target)
+
+  setCurrentAttribute(element, snappedIndex, 'data-snapped')
+
+  if (markerGroupElement) setCurrentAttribute(markerGroupElement, element._markerIndex ?? snappedIndex)
+
+  element._markerIndex = null
+}
+
+/**
+ * @param {HTMLElement & { _markerIndex?: number | null }} element
+ * @param {HTMLElement | HTMLLinkElement} target
+ * @param {HTMLElement} markerGroupElement
+ * @returns void
+ */
 export const scrollToMarker = (element, target, markerGroupElement) => {
   const index = [...markerGroupElement.children].indexOf(target)
 
   element._markerIndex = index;
 
-  setActiveAttribute(markerGroupElement, index)
+  setCurrentAttribute(markerGroupElement, index)
 
-  ;[...element.children][index]?.scrollIntoView({
+  element.children[index]?.scrollIntoView({
     inline: "start",
     block: "nearest"
   });
-
-  return index
-}
-
-export const setSnappedElement = (element, target, markerGroupElement) => {
-  const snappedIndex = [...element.children].indexOf(target)
-
-  setActiveAttribute(element, snappedIndex, 'data-snapped')
-
-  const index = element._markerIndex ? element._markerIndex : snappedIndex
-
-  if (markerGroupElement) setActiveAttribute(markerGroupElement, index)
-
-  element._markerIndex = null
-
-  return index
 }

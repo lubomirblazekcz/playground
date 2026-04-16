@@ -19,7 +19,7 @@
     box-sizing: border-box;
     cursor: pointer;
 
-    &:is([data-current]) {
+    &:is([aria-current]) {
       background-color: red;
     }
   }
