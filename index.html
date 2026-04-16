@@ -94,8 +94,22 @@
         <img class="aspect-3/2 rounded-2xl max-w-full lg:max-w-105 md:max-w-[calc(50%-0.75rem)]" src="https://placehold.co/420x280" alt=" " width="420" height="280" loading="lazy">
         <img class="aspect-3/2 rounded-2xl max-w-full lg:max-w-105 md:max-w-[calc(50%-0.75rem)]" src="https://placehold.co/420x280" alt=" " width="420" height="280" loading="lazy">
       </div>
+      <div>
+        <span data-x-carousel-part="counter">1</span>
+        /
+        <span>8</span>
+      </div>
+      <div class="x-carousel-marker-group" data-x-carousel-part="markerGroup">
+        <div class="x-carousel-marker" data-x-carousel-part="marker" data-index="0" data-current></div>
+        <div class="x-carousel-marker" data-x-carousel-part="marker" data-index="1"></div>
+        <div class="x-carousel-marker" data-x-carousel-part="marker" data-index="2"></div>
+        <div class="x-carousel-marker" data-x-carousel-part="marker" data-index="3"></div>
+        <div class="x-carousel-marker" data-x-carousel-part="marker" data-index="4"></div>
+        <div class="x-carousel-marker" data-x-carousel-part="marker" data-index="5"></div>
+        <div class="x-carousel-marker" data-x-carousel-part="marker" data-index="6"></div>
+        <div class="x-carousel-marker" data-x-carousel-part="marker" data-index="7"></div>
+      </div>
       <div class="flex items-center gap-4 justify-end mt-6 group-data-scroll-none/carousel:hidden">
-        <div class="flex gap-2 mr-auto" data-x-carousel-part="pagination" aria-hidden="true"></div>
         <button class="x-button square md:lg px-0" type="button" data-x-carousel-part="prev" command="--scrollPrev" commandfor="defaultCarousel" aria-label="{_'Předchozí'}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -107,5 +121,50 @@
           </svg>
         </button>
       </div>
+    </x-carousel>
+
+    <x-carousel class="x-carousel group/carousel max-w-6xl block mx-auto mt-8" id="verticalCarousel">
+      <div
+        class="x-carousel-content flex flex-col gap-6 rounded-2xl max-h-[50vh] snap-y snap-mandatory"
+        tabindex="-1"
+        data-x-carousel-part="content"
+      >
+        <img class="aspect-3/2 rounded-2xl max-w-full lg:max-w-105 md:max-w-[calc(50%-0.75rem)]" src="https://placehold.co/420x280" alt=" " width="420" height="280" loading="lazy" data-snapped>
+        <img class="aspect-3/2 rounded-2xl max-w-full lg:max-w-105 md:max-w-[calc(50%-0.75rem)]" src="https://placehold.co/420x280" alt=" " width="420" height="280" loading="lazy">
+        <img class="aspect-3/2 rounded-2xl max-w-full lg:max-w-105 md:max-w-[calc(50%-0.75rem)]" src="https://placehold.co/420x280" alt=" " width="420" height="280" loading="lazy">
+        <img class="aspect-3/2 rounded-2xl max-w-full lg:max-w-105 md:max-w-[calc(50%-0.75rem)]" src="https://placehold.co/420x280" alt=" " width="420" height="280" loading="lazy">
+        <img class="aspect-3/2 rounded-2xl max-w-full lg:max-w-105 md:max-w-[calc(50%-0.75rem)]" src="https://placehold.co/420x280" alt=" " width="420" height="280" loading="lazy">
+        <img class="aspect-3/2 rounded-2xl max-w-full lg:max-w-105 md:max-w-[calc(50%-0.75rem)]" src="https://placehold.co/420x280" alt=" " width="420" height="280" loading="lazy">
+        <img class="aspect-3/2 rounded-2xl max-w-full lg:max-w-105 md:max-w-[calc(50%-0.75rem)]" src="https://placehold.co/420x280" alt=" " width="420" height="280" loading="lazy">
+        <img class="aspect-3/2 rounded-2xl max-w-full lg:max-w-105 md:max-w-[calc(50%-0.75rem)]" src="https://placehold.co/420x280" alt=" " width="420" height="280" loading="lazy">
+      </div>
+      <div>
+        <span data-x-carousel-part="counter">1</span>
+        /
+        <span>8</span>
+      </div>
+      <div class="x-carousel-marker-group" data-x-carousel-part="markerGroup">
+        <div class="x-carousel-marker" data-x-carousel-part="marker" data-index="0" data-current></div>
+        <div class="x-carousel-marker" data-x-carousel-part="marker" data-index="1"></div>
+        <div class="x-carousel-marker" data-x-carousel-part="marker" data-index="2"></div>
+        <div class="x-carousel-marker" data-x-carousel-part="marker" data-index="3"></div>
+        <div class="x-carousel-marker" data-x-carousel-part="marker" data-index="4"></div>
+        <div class="x-carousel-marker" data-x-carousel-part="marker" data-index="5"></div>
+        <div class="x-carousel-marker" data-x-carousel-part="marker" data-index="6"></div>
+        <div class="x-carousel-marker" data-x-carousel-part="marker" data-index="7"></div>
+      </div>
+      <div class="flex items-center gap-4 justify-end mt-6 group-data-scroll-none/carousel:hidden">
+        <button class="x-button square md:lg px-0" type="button" data-x-carousel-part="prev" command="--scrollUp" commandfor="verticalCarousel" aria-label="{_'Předchozí'}">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+          </svg>
+        </button>
+        <button class="x-button square md:lg px-0" type="button" data-x-carousel-part="next" command="--scrollDown" commandfor="verticalCarousel" aria-label="{_'Následující'}">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+          </svg>
+        </button>
+      </div>
+    </x-carousel>
   </body>
 </html>

@@ -3,6 +3,27 @@
     inline-size: 100%;
   }
 
+  .x-carousel-marker-group {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .x-carousel-marker {
+    width: 16px;
+    height: 16px;
+    background-color: transparent;
+    border: 2px solid black;
+    border-radius: 50%;
+    display: block;
+    box-sizing: border-box;
+    cursor: pointer;
+
+    &:is([data-current]) {
+      background-color: red;
+    }
+  }
+
   .x-carousel-content {
     display: flex;
     overflow: auto;
@@ -12,6 +33,21 @@
     position: relative;
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
+    scroll-marker-group: after;
+
+    &::scroll-button(left) {
+      content: "<";
+    }
+
+    &::scroll-button(right) {
+      content: ">";
+    }
+
+    &::scroll-marker-group {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
 
     &::-webkit-scrollbar {
       display: none;
@@ -20,6 +56,22 @@
     & > :where(*) {
       flex: 0 0 auto;
       scroll-snap-align: start;
+      scroll-snap-stop: always;
+
+      &::scroll-marker {
+        width: 16px;
+        height: 16px;
+        background-color: transparent;
+        border: 2px solid black;
+        border-radius: 50%;
+        content: "";
+        display: block;
+        box-sizing: border-box;
+      }
+
+      &::scroll-marker:target-current {
+        background-color: black;
+      }
 
       &:last-child {
         scroll-snap-align: end;
