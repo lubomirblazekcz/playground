@@ -60,7 +60,12 @@ export const setSnappedAttribute = (element, target, markerGroupElement) => {
 
   setCurrentAttribute(element, snappedIndex, 'data-snapped')
 
-  if (markerGroupElement) setCurrentAttribute(markerGroupElement, element._markerIndex ?? snappedIndex)
+  if (markerGroupElement) {
+    const markerTarget = markerGroupElement.querySelector(`[href="#${target.id}"]`)
+    const index = element._markerIndex ?? (markerTarget ? [...markerGroupElement.children].indexOf(markerTarget) : snappedIndex)
+
+    setCurrentAttribute(markerGroupElement, index)
+  }
 
   element._markerIndex = null
 }
@@ -72,11 +77,13 @@ export const setSnappedAttribute = (element, target, markerGroupElement) => {
  * @returns void
  */
 export const scrollToMarker = (element, target, markerGroupElement) => {
-  const index = [...markerGroupElement.children].indexOf(target)
+  const snappedTarget = document.getElementById(target.getAttribute('href').replace('#', ''))
+  const markerTargetIndex = [...markerGroupElement.children].indexOf(target)
+  const index = (snappedTarget ? [...element.children].indexOf(snappedTarget) : null) ?? markerTargetIndex
 
-  element._markerIndex = index;
+  element._markerIndex = markerTargetIndex;
 
-  setCurrentAttribute(markerGroupElement, index)
+  setCurrentAttribute(markerGroupElement, markerTargetIndex)
 
   element.children[index]?.scrollIntoView({
     inline: "start",
