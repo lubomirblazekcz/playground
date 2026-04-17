@@ -83,5 +83,8 @@ export const scrollToMarker = (element, target, markerGroupElement) => {
 
   setCurrentAttribute(markerGroupElement, markerTargetIndex)
 
-  element.children[index]?.scrollIntoView({ inline: 'start', block: 'nearest' })
+  element.children[index]?.scrollIntoView({
+    inline: 'start',
+    block: 'nearest'
+  })
 }
