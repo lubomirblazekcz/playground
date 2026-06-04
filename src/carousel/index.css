@@ -43,10 +43,19 @@
       content: ">";
     }
 
+    &::scroll-button(up) {
+      content: "up";
+    }
+
+    &::scroll-button(down) {
+      content: "down";
+    }
+
     &::scroll-marker-group {
       display: flex;
       justify-content: center;
       gap: 20px;
+      height: 20px;
     }
 
     &::-webkit-scrollbar {

@@ -1,6 +1,5 @@
 import { supportsAnchor, supportsAnchoredContainer } from './utils.js'
 import { initializeController, WebuumElement } from 'webuum'
-import { scrollBy, scrollToMarker, setSnappedAttribute, setCurrentAttribute, toggleScrollState } from './carousel/index.js'
 import './polyfill.js'
 
 customElements.define('x-app', class extends HTMLBodyElement {
@@ -71,11 +70,19 @@ customElements.define('x-carousel', class extends WebuumElement {
       $next: null
   }
 
-  connectedCallback() {
+  static props = {
+    $vertical: false
+  }
+
+  async connectedCallback() {
+    const { scrollToMarker, setSnappedAttribute, toggleScrollState } = await import('./carousel/index.js')
+
     this.$marker.forEach((element) => element.addEventListener('click', (event) => {
       event.preventDefault()
 
-      scrollToMarker(this.$content, event.target, this.$markerGroup)
+      scrollToMarker(this.$content, event.target, this.$markerGroup, this.$vertical ? {
+        block: 'start',
+      }: {})
     }))
 
     this.$content.addEventListener('scrollsnapchanging', (event) => {
@@ -83,38 +90,39 @@ customElements.define('x-carousel', class extends WebuumElement {
     })
 
     this.$content.addEventListener('scroll', () => {
+      const vertical = this.$vertical ? {
+        scrollStart: this.$content.scrollTop <= 0,
+        scrollEnd: this.$content.scrollTop >= this.$content.scrollHeight - this.$content.clientHeight,
+        scrollNone: !(this.$content.scrollHeight - this.$content.clientHeight)
+      }: {}
+
       toggleScrollState(this.$content, {
         prevElement: this.$prev,
-        nextElement: this.$next
+        nextElement: this.$next,
+        ...vertical
       })
     })
   }
 
-  scrollPrev() {
+  async $scroll(direction) {
+    const { scrollBy } = await import('./carousel/index.js')
+
+    const vertical = this.$vertical ? {
+      distance: this.$content.clientHeight * 0.85,
+      position: 'top'
+    } : {}
+
     scrollBy(this.$content, {
-      direction: -1,
+      direction,
+      ...vertical
     })
+  }
+
+  scrollPrev() {
+    this.$scroll(-1)
   }
 
   scrollNext() {
-    scrollBy(this.$content, {
-      direction: 1,
-    })
-  }
-
-  scrollDown() {
-    scrollBy(this.$content, {
-      direction: 1,
-      distance: this.$content.clientHeight * 0.85,
-      position: 'top'
-    })
-  }
-
-  scrollUp() {
-    scrollBy(this.$content, {
-      direction: -1,
-      distance: this.$content.clientHeight * 0.85,
-      position: 'top'
-    })
+    this.$scroll(1)
   }
 })
