@@ -53,7 +53,7 @@ class Drawer extends HTMLDialogElement {
       top: [0, this.scrollHeight, 'top'],
     }[this.$placement] ?? []
 
-    await showDrawer(this, distance, direction)
+    await showDrawer(this.firstElementChild, distance, direction)
   }
 
   async closeDrawer() {
@@ -65,7 +65,7 @@ class Drawer extends HTMLDialogElement {
       top: [this.scrollHeight, 'top'],
     }[this.$placement] ?? []
 
-    await closeDrawer(this, distance, direction)
+    await closeDrawer(this.firstElementChild, distance, direction)
   }
 }
 

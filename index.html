@@ -89,11 +89,13 @@
           Show Drawer Left
         </button>
 
-        <dialog class="x-drawer snap-x snap-mandatory" is="x-drawer" id="defaultDrawerLeft" closedby="any">
-          <nav class="x-drawer-content" data-x-drawer-part="content">
-            Drawer content
-            <button command="request-close" commandfor="defaultDrawerLeft">Close</button>
-          </nav>
+        <dialog class="x-drawer" is="x-drawer" id="defaultDrawerLeft" closedby="any">
+          <div class="x-drawer-scroller snap-x snap-mandatory">
+            <nav class="x-drawer-content" data-x-drawer-part="content">
+              Drawer content
+              <button command="request-close" commandfor="defaultDrawerLeft">Close</button>
+            </nav>
+          </div>
         </dialog>
       </div>
       <div class="relative w-fit">
@@ -105,11 +107,13 @@
           Show Drawer Right
         </button>
 
-        <dialog class="x-drawer after:order-first snap-x snap-mandatory" is="x-drawer" id="defaultDrawerRight" closedby="any" data-placement="right">
-          <nav class="x-drawer-content" data-x-drawer-part="content">
-            Drawer content
-            <button command="request-close" commandfor="defaultDrawerRight">Close</button>
-          </nav>
+        <dialog class="x-drawer" style="animation-direction: reverse" is="x-drawer" id="defaultDrawerRight" closedby="any" data-placement="right">
+          <div class="x-drawer-scroller after:order-first snap-x snap-mandatory">
+            <nav class="x-drawer-content" data-x-drawer-part="content">
+              Drawer content
+              <button command="request-close" commandfor="defaultDrawerRight">Close</button>
+            </nav>
+          </div>
         </dialog>
       </div>
       <div class="relative w-fit">
@@ -121,11 +125,13 @@
           Show Drawer Bottom
         </button>
 
-        <dialog class="x-drawer flex flex-col after:order-first snap-y snap-mandatory" is="x-drawer" id="defaultDrawerBottom" closedby="any" data-placement="bottom">
-          <nav class="x-drawer-content" data-x-drawer-part="content" style="--x-drawer-content-inline-size: 100%;--x-drawer-content-block-size: calc(100vh - 4rem);">
-            Drawer content
-            <button command="request-close" commandfor="defaultDrawerBottom">Close</button>
-          </nav>
+        <dialog class="x-drawer" style="animation-direction: reverse" is="x-drawer" id="defaultDrawerBottom" closedby="any" data-placement="bottom">
+          <div class="x-drawer-scroller flex flex-col after:order-first snap-y snap-mandatory">
+            <nav class="x-drawer-content" data-x-drawer-part="content" style="--x-drawer-content-inline-size: 100%;--x-drawer-content-block-size: calc(100vh - 4rem);">
+              Drawer content
+              <button command="request-close" commandfor="defaultDrawerBottom">Close</button>
+            </nav>
+          </div>
         </dialog>
       </div>
       <div class="relative w-fit">
@@ -137,11 +143,13 @@
           Show Drawer Top
         </button>
 
-        <dialog class="x-drawer flex flex-col snap-y snap-mandatory" is="x-drawer" id="defaultDrawerTop" closedby="any" data-placement="top">
-          <nav class="x-drawer-content" data-x-drawer-part="content" style="--x-drawer-content-inline-size: 100%;--x-drawer-content-block-size: calc(100vh - 4rem);">
-            Drawer content
-            <button command="request-close" commandfor="defaultDrawerTop">Close</button>
-          </nav>
+        <dialog class="x-drawer" is="x-drawer" id="defaultDrawerTop" closedby="any" data-placement="top">
+          <div class="x-drawer-scroller flex flex-col snap-y snap-mandatory">
+            <nav class="x-drawer-content" data-x-drawer-part="content" style="--x-drawer-content-inline-size: 100%;--x-drawer-content-block-size: calc(100vh - 4rem);">
+              Drawer content
+              <button command="request-close" commandfor="defaultDrawerTop">Close</button>
+            </nav>
+          </div>
         </dialog>
       </div>
     </main>
