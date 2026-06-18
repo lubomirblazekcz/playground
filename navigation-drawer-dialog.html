@@ -499,7 +499,7 @@
               type="button"
               aria-label="Zavřít menu"
               commandfor="drawer"
-              command="request-close"
+              command="close"
             >
               <svg
                 aria-hidden="true"
@@ -726,10 +726,6 @@
               left: this.#scroller.offsetWidth,
               behavior: "auto",
             });
-          }
-
-          requestClose() {
-            this.close();
           }
 
           async #openDrawer() {
