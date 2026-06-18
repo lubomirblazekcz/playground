@@ -1,6 +1,7 @@
 import { supportsAnchor, supportsAnchoredContainer } from './utils.js'
 import { initializeController, WebuumElement } from 'webuum'
 import './polyfill.js'
+import './drawer.js'
 
 customElements.define('x-app', class extends HTMLBodyElement {
   constructor() {

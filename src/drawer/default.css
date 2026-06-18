@@ -1,0 +1,44 @@
+.x-drawer {
+  z-index: var(--x-drawer-z-index, var(--z-index-30));
+  background-color:
+    color-mix(
+      in var(--x-drawer-background-color-space, srgb),
+      #000 calc(var(--background-color-opacity, 0) * var(--x-drawer-background-color-opacity)),
+      var(--x-drawer-background-color-mix, transparent)
+    );
+  position: fixed;
+  inset: 0;
+  display: flex;
+  overflow: auto hidden;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+
+  &:not([open]),
+  &::backdrop {
+    display: none;
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &::after {
+    content: "";
+    min-inline-size: 100vw;
+    scroll-snap-align: end;
+  }
+
+  &.flex-col {
+    overflow: hidden auto;
+
+    &::after {
+      min-block-size: 100dvh;
+    }
+  }
+}

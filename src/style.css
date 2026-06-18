@@ -2,6 +2,7 @@
 @import "./popover";
 @import "./dialog";
 @import "./carousel";
+@import "./drawer";
 
 @theme {
   --default-transition-property:
