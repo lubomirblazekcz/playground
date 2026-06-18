@@ -16,6 +16,10 @@ class Drawer extends HTMLDialogElement {
 
   connectedCallback() {
     this.addEventListener('scroll', this.$scroll)
+    this.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      this.closeDrawer();
+    });
   }
 
   async $scroll({ target }) {
@@ -53,7 +57,7 @@ class Drawer extends HTMLDialogElement {
   }
 
   async showModal() {
-    const { showDrawer, scrollInitDrawer } = await import('./drawer/index.js')
+    const { showDrawer } = await import('./drawer/index.js')
 
     super.showModal()
 
