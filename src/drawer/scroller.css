@@ -20,12 +20,9 @@
     scroll-initial-target: nearest;
   }
 
-  &.snap-y {
-    scroll-timeline: --x-drawer-fade y;
-  }
-
   &.flex-col {
     overflow: hidden auto;
+    scroll-timeline: --x-drawer-fade y;
 
     &::after {
       min-block-size: 100dvh;
