@@ -258,8 +258,8 @@ function HandleInterestHoverOrFocus(el, source) {
       }
     }
     const needsPartialInterest
-            = source === Source.Focus
-              && target.matches(':has(' + focusableSelector + ')')
+      = source === Source.Focus
+        && target.matches(':has(' + focusableSelector + ')')
     ScheduleInterestGainedTask(
       el,
       needsPartialInterest

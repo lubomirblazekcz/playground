@@ -10,7 +10,7 @@
 export const scrollBy = (element, { direction = 1, distance, position = 'left', ratio = 0.85 }) => {
   console.log(distance ?? element.clientWidth, direction)
   element.scrollBy({
-    [position]: (distance ?? element.clientWidth * ratio) * direction
+    [position]: (distance ?? element.clientWidth * ratio) * direction,
   })
 }
 
@@ -76,7 +76,7 @@ export const setSnappedAttribute = (element, target, markerGroupElement) => {
  * @param {ScrollIntoViewOptions} scrollIntoViewOptions
  * @returns void
  */
-export const scrollToMarker = (element, target, markerGroupElement, scrollIntoViewOptions= {}) => {
+export const scrollToMarker = (element, target, markerGroupElement, scrollIntoViewOptions = {}) => {
   const snappedTarget = document.getElementById(target.getAttribute('href').slice(1))
   const markerTargetIndex = [...markerGroupElement.children].indexOf(target)
   const index = snappedTarget ? [...element.children].indexOf(snappedTarget) : markerTargetIndex
@@ -89,6 +89,6 @@ export const scrollToMarker = (element, target, markerGroupElement, scrollIntoVi
     inline: 'start',
     block: 'nearest',
     container: 'nearest',
-    ...scrollIntoViewOptions
+    ...scrollIntoViewOptions,
   })
 }

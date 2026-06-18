@@ -64,26 +64,28 @@ customElements.define('x-popover',
 
 customElements.define('x-carousel', class extends WebuumElement {
   static parts = {
-      $content: null,
-      $markerGroup: null,
-      $marker: null,
-      $prev: null,
-      $next: null
+    $content: null,
+    $markerGroup: null,
+    $marker: null,
+    $prev: null,
+    $next: null,
   }
 
   static props = {
-    $vertical: false
+    $vertical: false,
   }
 
   async connectedCallback() {
     const { scrollToMarker, setSnappedAttribute, toggleScrollState } = await import('./carousel/index.js')
 
-    this.$marker.forEach((element) => element.addEventListener('click', (event) => {
+    this.$marker.forEach(element => element.addEventListener('click', (event) => {
       event.preventDefault()
 
-      scrollToMarker(this.$content, event.target, this.$markerGroup, this.$vertical ? {
-        block: 'start',
-      }: {})
+      scrollToMarker(this.$content, event.target, this.$markerGroup, this.$vertical
+        ? {
+            block: 'start',
+          }
+        : {})
     }))
 
     this.$content.addEventListener('scrollsnapchanging', (event) => {
@@ -91,16 +93,18 @@ customElements.define('x-carousel', class extends WebuumElement {
     })
 
     this.$content.addEventListener('scroll', () => {
-      const vertical = this.$vertical ? {
-        scrollStart: this.$content.scrollTop <= 0,
-        scrollEnd: this.$content.scrollTop >= this.$content.scrollHeight - this.$content.clientHeight,
-        scrollNone: !(this.$content.scrollHeight - this.$content.clientHeight)
-      }: {}
+      const vertical = this.$vertical
+        ? {
+            scrollStart: this.$content.scrollTop <= 0,
+            scrollEnd: this.$content.scrollTop >= this.$content.scrollHeight - this.$content.clientHeight,
+            scrollNone: !(this.$content.scrollHeight - this.$content.clientHeight),
+          }
+        : {}
 
       toggleScrollState(this.$content, {
         prevElement: this.$prev,
         nextElement: this.$next,
-        ...vertical
+        ...vertical,
       })
     })
   }
@@ -108,14 +112,16 @@ customElements.define('x-carousel', class extends WebuumElement {
   async $scroll(direction) {
     const { scrollBy } = await import('./carousel/index.js')
 
-    const vertical = this.$vertical ? {
-      distance: this.$content.clientHeight * 0.85,
-      position: 'top'
-    } : {}
+    const vertical = this.$vertical
+      ? {
+          distance: this.$content.clientHeight * 0.85,
+          position: 'top',
+        }
+      : {}
 
     scrollBy(this.$content, {
       direction,
-      ...vertical
+      ...vertical,
     })
   }
 
@@ -134,13 +140,13 @@ customElements.define('x-carousel-horizontal', class extends WebuumElement {
     $markerGroup: null,
     $marker: null,
     $prev: null,
-    $next: null
+    $next: null,
   }
 
   async connectedCallback() {
     const { scrollToMarker, setSnappedAttribute, toggleScrollState } = await import('./carousel/index.js')
 
-    this.$marker.forEach((element) => element.addEventListener('click', (event) => {
+    this.$marker.forEach(element => element.addEventListener('click', (event) => {
       event.preventDefault()
 
       scrollToMarker(this.$content, event.target, this.$markerGroup)
@@ -153,7 +159,7 @@ customElements.define('x-carousel-horizontal', class extends WebuumElement {
     this.$content.addEventListener('scroll', () => {
       toggleScrollState(this.$content, {
         prevElement: this.$prev,
-        nextElement: this.$next
+        nextElement: this.$next,
       })
     })
   }
@@ -181,13 +187,13 @@ customElements.define('x-carousel-vertical', class extends WebuumElement {
     $markerGroup: null,
     $marker: null,
     $prev: null,
-    $next: null
+    $next: null,
   }
 
   async connectedCallback() {
     const { scrollToMarker, setSnappedAttribute, toggleScrollState } = await import('./carousel/index.js')
 
-    this.$marker.forEach((element) => element.addEventListener('click', (event) => {
+    this.$marker.forEach(element => element.addEventListener('click', (event) => {
       event.preventDefault()
 
       scrollToMarker(this.$content, event.target, this.$markerGroup, {
@@ -205,7 +211,7 @@ customElements.define('x-carousel-vertical', class extends WebuumElement {
         nextElement: this.$next,
         scrollStart: this.$content.scrollTop <= 0,
         scrollEnd: this.$content.scrollTop >= this.$content.scrollHeight - this.$content.clientHeight,
-        scrollNone: !(this.$content.scrollHeight - this.$content.clientHeight)
+        scrollNone: !(this.$content.scrollHeight - this.$content.clientHeight),
       })
     })
   }
@@ -216,7 +222,7 @@ customElements.define('x-carousel-vertical', class extends WebuumElement {
     scrollBy(this.$content, {
       direction,
       distance: this.$content.clientHeight * 0.85,
-      position: 'top'
+      position: 'top',
     })
   }
 

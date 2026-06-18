@@ -89,10 +89,10 @@
           Show Drawer Left
         </button>
 
-        <dialog class="x-drawer" is="x-drawer" id="defaultDrawerLeft" closedby="any" inert>
+        <dialog class="x-drawer snap-x snap-mandatory" is="x-drawer" id="defaultDrawerLeft" closedby="any">
           <nav class="x-drawer-content" data-x-drawer-part="content">
             Drawer content
-            <button command="--closeDrawer" commandfor="defaultDrawerLeft">Close</button>
+            <button command="request-close" commandfor="defaultDrawerLeft">Close</button>
           </nav>
         </dialog>
       </div>
@@ -105,10 +105,10 @@
           Show Drawer Right
         </button>
 
-        <dialog class="x-drawer after:order-first" is="x-drawer" id="defaultDrawerRight" closedby="any" data-placement="right" inert>
+        <dialog class="x-drawer after:order-first snap-x snap-mandatory" is="x-drawer" id="defaultDrawerRight" closedby="any" data-placement="right">
           <nav class="x-drawer-content" data-x-drawer-part="content">
             Drawer content
-            <button command="close" commandfor="defaultDrawerRight">Close</button>
+            <button command="request-close" commandfor="defaultDrawerRight">Close</button>
           </nav>
         </dialog>
       </div>
@@ -121,10 +121,10 @@
           Show Drawer Bottom
         </button>
 
-        <dialog class="x-drawer flex flex-col after:order-first" is="x-drawer" id="defaultDrawerBottom" closedby="any" data-placement="bottom" inert>
+        <dialog class="x-drawer flex flex-col after:order-first snap-y snap-mandatory" is="x-drawer" id="defaultDrawerBottom" closedby="any" data-placement="bottom">
           <nav class="x-drawer-content" data-x-drawer-part="content" style="--x-drawer-content-inline-size: 100%;--x-drawer-content-block-size: calc(100vh - 4rem);">
             Drawer content
-            <button command="close" commandfor="defaultDrawerBottom">Close</button>
+            <button command="request-close" commandfor="defaultDrawerBottom">Close</button>
           </nav>
         </dialog>
       </div>
@@ -137,10 +137,10 @@
           Show Drawer Top
         </button>
 
-        <dialog class="x-drawer flex flex-col" is="x-drawer" id="defaultDrawerTop" closedby="any" data-placement="top" inert>
+        <dialog class="x-drawer flex flex-col snap-y snap-mandatory" is="x-drawer" id="defaultDrawerTop" closedby="any" data-placement="top">
           <nav class="x-drawer-content" data-x-drawer-part="content" style="--x-drawer-content-inline-size: 100%;--x-drawer-content-block-size: calc(100vh - 4rem);">
             Drawer content
-            <button command="close" commandfor="defaultDrawerTop">Close</button>
+            <button command="request-close" commandfor="defaultDrawerTop">Close</button>
           </nav>
         </dialog>
       </div>

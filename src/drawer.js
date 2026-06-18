@@ -15,59 +15,43 @@ class Drawer extends HTMLDialogElement {
   }
 
   connectedCallback() {
-    this.addEventListener('scroll', this.$scroll)
-    this.addEventListener("cancel", (event) => {
-      event.preventDefault();
-      this.closeDrawer();
-    });
+    this.addEventListener('cancel', (event) => {
+      event.preventDefault()
+      this.closeDrawer()
+    })
+
+    const visibleThreshold = 1 / window.innerWidth
+    this.$observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries.at(-1)
+
+        if (entry.intersectionRatio < visibleThreshold) {
+          this.close()
+        }
+      },
+      { root: this, threshold: [visibleThreshold, 1] },
+    )
+
+    this.$observer.observe(this.$content)
   }
 
-  async $scroll({ target }) {
-    const { scrollDrawer } = await import('./drawer/index.js')
-
-    const bottomTop = {
-      snapClass: 'snap-y snap-mandatory',
-      scrollSize: target.scrollHeight - target.clientHeight,
-      scrollDirection: target.scrollTop,
-    }
-
-    const rightBottom = {
-      scrollClose: 0,
-      opacityRatio: 0,
-    }
-
-    const placement = {
-      right: {
-        ...rightBottom,
-        scrollOpen: target.scrollWidth - target.clientWidth,
-      },
-      bottom: {
-        ...rightBottom,
-        ...bottomTop,
-        scrollOpen: target.scrollHeight - target.clientHeight,
-      },
-      top: {
-        ...bottomTop,
-        scrollOpen: 0,
-        scrollClose: target.scrollHeight - target.clientHeight,
-      },
-    }
-
-    await scrollDrawer(target, placement[this.$placement])
+  disconnectedCallback() {
+    this.$observer?.disconnect()
   }
 
   async showModal() {
-    const { showDrawer } = await import('./drawer/index.js')
-
     super.showModal()
+    this.showDrawer()
+  }
+
+  async showDrawer() {
+    const { showDrawer } = await import('./drawer/index.js')
 
     const [distance, distanceClosed, direction] = {
       right: [this.scrollWidth, 0, 'left'],
       bottom: [this.scrollHeight, 0, 'top'],
       top: [0, this.scrollHeight, 'top'],
     }[this.$placement] ?? []
-
-    console.log(this.$placement)
 
     await showDrawer(this, distance, direction)
   }
@@ -82,21 +66,6 @@ class Drawer extends HTMLDialogElement {
     }[this.$placement] ?? []
 
     await closeDrawer(this, distance, direction)
-
-    if (this.$triggerElement) this.$triggerElement.ariaExpanded = false
-  }
-
-  async toggle({ currentTarget }) {
-    this.$triggerElement = currentTarget
-
-    if (this.element.inert) {
-      currentTarget.ariaExpanded = true
-      this.showModal()
-    }
-    else {
-      currentTarget.ariaExpanded = false
-      this.close()
-    }
   }
 }
 

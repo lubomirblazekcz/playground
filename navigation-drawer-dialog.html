@@ -499,7 +499,7 @@
               type="button"
               aria-label="Zavřít menu"
               commandfor="drawer"
-              command="close"
+              command="request-close"
             >
               <svg
                 aria-hidden="true"
@@ -712,12 +712,6 @@
 
           disconnectedCallback() {
             this.#observer?.disconnect();
-          }
-
-          showModal() {
-            if (!this.open) {
-              super.showModal();
-            }
           }
 
           close() {
