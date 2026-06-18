@@ -7,7 +7,6 @@ class Drawer extends HTMLDialogElement {
 
   static props = {
     $placement: 'left',
-    $dialog: 'modal',
   }
 
   constructor() {
@@ -17,11 +16,6 @@ class Drawer extends HTMLDialogElement {
 
   connectedCallback() {
     this.addEventListener('scroll', this.$scroll)
-    this.addEventListener('click', this.dismiss)
-
-    this.addEventListener('command', (e) => {
-      console.log(e)
-    })
   }
 
   async $scroll({ target }) {
@@ -71,12 +65,10 @@ class Drawer extends HTMLDialogElement {
 
     console.log(this.$placement)
 
-    await scrollInitDrawer(this, distanceClosed, direction)
-
     await showDrawer(this, distance, direction)
   }
 
-  async close() {
+  async closeDrawer() {
     const { closeDrawer } = await import('./drawer/index.js')
 
     const [distance, direction] = {
@@ -88,16 +80,6 @@ class Drawer extends HTMLDialogElement {
     await closeDrawer(this, distance, direction)
 
     if (this.$triggerElement) this.$triggerElement.ariaExpanded = false
-  }
-
-  async dismiss({ target }) {
-    if (!this.open) return
-
-    console.log('asdf')
-
-    if (!this.$content.contains(target) && !this.$content.isEqualNode(target)) {
-      await this.close()
-    }
   }
 
   async toggle({ currentTarget }) {

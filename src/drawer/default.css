@@ -1,11 +1,5 @@
 .x-drawer {
   z-index: var(--x-drawer-z-index, var(--z-index-30));
-  background-color:
-    color-mix(
-      in var(--x-drawer-background-color-space, srgb),
-      #000 calc(var(--background-color-opacity, 0) * var(--x-drawer-background-color-opacity)),
-      var(--x-drawer-background-color-mix, transparent)
-    );
   position: fixed;
   inset: 0;
   display: flex;
@@ -18,10 +12,40 @@
   height: 100%;
   max-width: 100%;
   max-height: 100%;
+  background-color: transparent;
 
-  &:not([open]),
-  &::backdrop {
+  &:not([open]) {
     display: none;
+  }
+
+  &,
+  &::backdrop {
+    transition-property: var(--default-transition-property);
+    transition-timing-function: var(--ease-in-out);
+    transition-duration: var(--default-transition-duration);
+    transition-behavior: allow-discrete;
+    opacity: 0;
+  }
+
+  &::backdrop {
+    background-color: rgb(0 0 0 / 80%);
+  }
+
+  &[open] {
+    opacity: 1;
+
+    @starting-style {
+      opacity: 0;
+      transform: translateY(-2rem);
+    }
+  }
+
+  &[open]::backdrop {
+    opacity: 1;
+
+    @starting-style {
+      opacity: 0;
+    }
   }
 
   &::-webkit-scrollbar {
@@ -32,6 +56,7 @@
     content: "";
     min-inline-size: 100vw;
     scroll-snap-align: end;
+    scroll-initial-target: nearest;
   }
 
   &.flex-col {

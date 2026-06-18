@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Navigation Drawer</title>
+    <style>
+      @property --drawer-backdrop {
+        syntax: "<number>";
+        inherits: true;
+        initial-value: 0;
+      }
+
+      :root {
+        color-scheme: light;
+        --ink: #191b1f;
+        --muted: #636872;
+        --line: #d9dde5;
+        --surface: #f7f8fa;
+        --panel: #ffffff;
+        --accent: #0b66f0;
+        --drawer-width: min(20rem, 80dvw);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100svh;
+        background: var(--surface);
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .Drawer {
+        --drawer-backdrop: 0;
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: var(--drawer-width);
+        height: 100dvh;
+        max-width: none;
+        max-height: none;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        overflow: visible;
+        transform: translateX(-100%);
+        transition:
+          transform 220ms ease,
+          overlay 220ms ease allow-discrete,
+          display 220ms ease allow-discrete;
+      }
+
+      .Drawer::backdrop {
+        background: #000;
+        opacity: 0;
+        transition:
+          opacity 220ms ease,
+          overlay 220ms ease allow-discrete,
+          display 220ms ease allow-discrete;
+      }
+
+      .Drawer:popover-open {
+        transform: translateX(0);
+      }
+
+      .Drawer:popover-open::backdrop {
+        opacity: 0.52;
+      }
+
+      @starting-style {
+        .Drawer:popover-open {
+          transform: translateX(-100%);
+        }
+
+        .Drawer:popover-open::backdrop {
+          opacity: 0;
+        }
+      }
+
+      .Drawer-scroller {
+        position: relative;
+        width: 100%;
+        height: 100svh;
+        overflow: visible;
+        overscroll-behavior: none;
+        scrollbar-width: none;
+      }
+
+      .Drawer[data-enhanced] {
+        inset: 0;
+        width: 100dvw;
+        transform: none;
+        transition: none;
+      }
+
+      .Drawer[data-enhanced]::backdrop {
+        opacity: calc(var(--drawer-backdrop) * 0.52);
+        transition: none;
+      }
+
+      .Drawer[data-enhanced] .Drawer-scroller {
+        display: grid;
+        grid-template-columns: var(--drawer-width) 100%;
+        width: 100dvw;
+        overflow-x: scroll;
+        scroll-snap-type: x mandatory;
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        .Drawer[data-enhanced] .Drawer-scroller {
+          scroll-behavior: smooth;
+        }
+      }
+
+      .Drawer[data-enhanced] .Drawer-scroller::after {
+        content: "";
+        scroll-snap-align: end;
+        scroll-initial-target: nearest;
+      }
+
+      .Drawer-scroller::-webkit-scrollbar,
+      .Drawer-sheet::-webkit-scrollbar {
+        display: none;
+      }
+
+      .Drawer-sheet {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        height: 100svh;
+        padding: 1rem;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        background: #242831;
+        color: #fff;
+        outline: none;
+        box-shadow: 0.75rem 0 2rem rgb(0 0 0 / 0.22);
+      }
+
+      .Drawer[data-enhanced] .Drawer-sheet {
+        scroll-snap-align: start;
+      }
+
+      @supports (animation-timeline: scroll()) {
+        .Drawer[data-enhanced] {
+          timeline-scope: --drawer-fade;
+          animation: fade-drawer-backdrop linear both;
+          animation-timeline: --drawer-fade;
+        }
+
+        .Drawer[data-enhanced] .Drawer-scroller {
+          scroll-timeline: --drawer-fade x;
+        }
+
+        @keyframes fade-drawer-backdrop {
+          0% {
+            --drawer-backdrop: 1;
+          }
+
+          100% {
+            --drawer-backdrop: 0;
+          }
+        }
+      }
+
+      .Drawer-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        min-height: 3rem;
+        padding-block-end: 1rem;
+        border-bottom: 1px solid rgb(255 255 255 / 0.14);
+      }
+
+      .Drawer-brand {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 760;
+        letter-spacing: 0;
+      }
+
+      .IconButton {
+        display: inline-grid;
+        place-items: center;
+        width: 2.75rem;
+        height: 2.75rem;
+        border: 1px solid transparent;
+        border-radius: 0.5rem;
+        background: transparent;
+        color: currentColor;
+        cursor: pointer;
+      }
+
+      .IconButton:hover {
+        background: rgb(255 255 255 / 0.1);
+      }
+
+      .IconButton:focus-visible,
+      .Drawer-link:focus-visible,
+      .Header-link:focus-visible,
+      .Action:focus-visible {
+        outline: 3px solid rgb(11 102 240 / 0.35);
+        outline-offset: 3px;
+      }
+
+      .Drawer-menu {
+        display: grid;
+        gap: 0.25rem;
+        align-content: start;
+        margin: 0;
+        padding: 1rem 0;
+        list-style: none;
+      }
+
+      .Drawer-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 3rem;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        color: rgb(255 255 255 / 0.88);
+        font-weight: 620;
+        text-decoration: none;
+      }
+
+      .Drawer-link:hover,
+      .Drawer-link[aria-current="page"] {
+        background: rgb(255 255 255 / 0.1);
+        color: #fff;
+      }
+
+      .Drawer-link svg {
+        opacity: 0.72;
+      }
+
+      .Drawer-note {
+        margin: 0;
+        padding: 1rem 0 0;
+        border-top: 1px solid rgb(255 255 255 / 0.14);
+        color: rgb(255 255 255 / 0.68);
+        font-size: 0.875rem;
+      }
+
+      .Page {
+        min-height: 100svh;
+      }
+
+      .Header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        min-height: 4.5rem;
+        padding-inline: clamp(1rem, 4vw, 2.5rem);
+        border-bottom: 1px solid var(--line);
+        background: rgb(247 248 250 / 0.88);
+        backdrop-filter: blur(16px);
+      }
+
+      .Header .IconButton {
+        border-color: var(--line);
+        background: var(--panel);
+        color: var(--ink);
+      }
+
+      .Header .IconButton:hover {
+        background: #eef3ff;
+      }
+
+      .Header-brand {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 760;
+      }
+
+      .Header-nav {
+        display: flex;
+        gap: 1rem;
+        margin-left: auto;
+      }
+
+      .Header-link {
+        color: var(--muted);
+        font-size: 0.9375rem;
+        font-weight: 650;
+        text-decoration: none;
+      }
+
+      .Header-link:hover {
+        color: var(--ink);
+      }
+
+      .Hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(17rem, 0.95fr);
+        align-items: center;
+        gap: clamp(2rem, 6vw, 5rem);
+        max-width: 72rem;
+        margin-inline: auto;
+        padding: clamp(2.25rem, 8vw, 6rem) clamp(1rem, 4vw, 2.5rem);
+      }
+
+      .Hero-kicker {
+        margin: 0 0 0.75rem;
+        color: var(--accent);
+        font-size: 0.875rem;
+        font-weight: 760;
+      }
+
+      h1 {
+        max-width: 11ch;
+        margin: 0;
+        font-size: clamp(3rem, 8vw, 5.75rem);
+        line-height: 0.95;
+        letter-spacing: 0;
+      }
+
+      .Hero-copy {
+        max-width: 38rem;
+        margin: 1.25rem 0 0;
+        color: var(--muted);
+        font-size: clamp(1rem, 2vw, 1.2rem);
+      }
+
+      .ActionRow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-block-start: 1.75rem;
+      }
+
+      .Action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2.875rem;
+        padding-inline: 1rem;
+        border: 1px solid var(--line);
+        border-radius: 0.5rem;
+        background: var(--panel);
+        color: var(--ink);
+        font-weight: 730;
+        text-decoration: none;
+      }
+
+      .ActionPrimary {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .Preview {
+        display: grid;
+        gap: 1rem;
+        padding: clamp(1rem, 3vw, 1.5rem);
+        border: 1px solid var(--line);
+        border-radius: 0.5rem;
+        background: var(--panel);
+        box-shadow: 0 1.5rem 4rem rgb(39 45 58 / 0.12);
+      }
+
+      .Preview-row {
+        display: grid;
+        grid-template-columns: 2.75rem 1fr auto;
+        align-items: center;
+        gap: 0.875rem;
+        min-height: 3.75rem;
+        padding-block: 0.5rem;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .Preview-row:last-child {
+        border-bottom: 0;
+      }
+
+      .Preview-mark {
+        display: grid;
+        place-items: center;
+        width: 2.75rem;
+        aspect-ratio: 1;
+        border-radius: 0.5rem;
+        background: #eef3ff;
+        color: var(--accent);
+        font-weight: 800;
+      }
+
+      .Preview-title {
+        margin: 0;
+        font-weight: 760;
+      }
+
+      .Preview-subtitle {
+        margin: 0.1rem 0 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .Preview-state {
+        color: var(--muted);
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+
+      .Section {
+        max-width: 72rem;
+        margin-inline: auto;
+        padding: 0 clamp(1rem, 4vw, 2.5rem) 4rem;
+      }
+
+      .FeatureList {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1px;
+        border: 1px solid var(--line);
+        background: var(--line);
+      }
+
+      .Feature {
+        min-height: 9rem;
+        padding: 1.25rem;
+        background: var(--surface);
+      }
+
+      .Feature h2 {
+        margin: 0 0 0.5rem;
+        font-size: 1rem;
+      }
+
+      .Feature p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      @media (max-width: 760px) {
+        .Header-nav {
+          display: none;
+        }
+
+        .Hero {
+          grid-template-columns: 1fr;
+          padding-block-start: 2rem;
+        }
+
+        h1 {
+          max-width: 9ch;
+        }
+
+        .FeatureList {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <navigation-drawer class="Drawer" id="drawer" popover="auto">
+      <div class="Drawer-scroller">
+        <nav class="Drawer-sheet" aria-label="Hlavní navigace" tabindex="-1">
+          <div class="Drawer-top">
+            <p class="Drawer-brand">Navigace</p>
+            <button
+              class="IconButton"
+              id="drawer-close"
+              type="button"
+              aria-label="Zavřít menu"
+              commandfor="drawer"
+              command="hide-popover"
+            >
+              <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+              </svg>
+            </button>
+          </div>
+
+          <ul class="Drawer-menu">
+            <li>
+              <a class="Drawer-link" href="#prehled" aria-current="page">
+                Přehled
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </a>
+            </li>
+            <li><a class="Drawer-link" href="#produkty">Produkty</a></li>
+            <li><a class="Drawer-link" href="#tymy">Týmy</a></li>
+            <li><a class="Drawer-link" href="#reporty">Reporty</a></li>
+            <li><a class="Drawer-link" href="#nastaveni">Nastavení</a></li>
+          </ul>
+
+          <p class="Drawer-note">
+            Drawer zavřete gestem, tlačítkem, kliknutím mimo panel nebo klávesou Escape.
+          </p>
+        </nav>
+      </div>
+    </navigation-drawer>
+
+    <main class="Page" id="page">
+      <header class="Header">
+        <button
+          class="IconButton"
+          id="drawer-open"
+          type="button"
+          aria-label="Otevřít menu"
+          aria-expanded="false"
+          aria-controls="drawer"
+          commandfor="drawer"
+          command="show-popover"
+        >
+          <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </button>
+        <p class="Header-brand">Čistý drawer</p>
+        <nav class="Header-nav" aria-label="Sekce stránky">
+          <a class="Header-link" href="#prehled">Přehled</a>
+          <a class="Header-link" href="#produkty">Produkty</a>
+          <a class="Header-link" href="#reporty">Reporty</a>
+        </nav>
+      </header>
+
+      <section class="Hero" id="prehled">
+        <div>
+          <p class="Hero-kicker">Popover + command + scroll snap</p>
+          <h1>Drawer bez frameworku.</h1>
+          <p class="Hero-copy">
+            Jednostránkový HTML příklad s nativním popover baseline a rozšířením
+            podle scroll-snap drawer patternu.
+          </p>
+          <div class="ActionRow">
+            <a class="Action ActionPrimary" href="#produkty">Projít obsah</a>
+            <a class="Action" href="#reporty">Detail řešení</a>
+          </div>
+        </div>
+
+        <div class="Preview" aria-label="Ukázkový obsah stránky">
+          <div class="Preview-row">
+            <span class="Preview-mark">01</span>
+            <div>
+              <p class="Preview-title">Top layer</p>
+              <p class="Preview-subtitle">Drawer překryje běžné stacking contexty.</p>
+            </div>
+            <span class="Preview-state">OK</span>
+          </div>
+          <div class="Preview-row">
+            <span class="Preview-mark">02</span>
+            <div>
+              <p class="Preview-title">Command</p>
+              <p class="Preview-subtitle">Tlačítka volají nativní show/hide popover akce.</p>
+            </div>
+            <span class="Preview-state">OK</span>
+          </div>
+          <div class="Preview-row">
+            <span class="Preview-mark">03</span>
+            <div>
+              <p class="Preview-title">Swipe</p>
+              <p class="Preview-subtitle">Rozšíření přidá scroll-snap gesta a stav.</p>
+            </div>
+            <span class="Preview-state">OK</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="Section" id="produkty">
+        <div class="FeatureList">
+          <article class="Feature">
+            <h2>Gesta</h2>
+            <p>Nativní command atributy otevřou a zavřou panel i bez JavaScriptu.</p>
+          </article>
+          <article class="Feature" id="tymy">
+            <h2>Backdrop</h2>
+            <p>Backdrop fade používá scroll-driven animaci a JavaScript fallback.</p>
+          </article>
+          <article class="Feature" id="reporty">
+            <h2>Stav</h2>
+            <p>Web komponenta přidává observer, focus a swipe dismissal.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      customElements.define(
+        "navigation-drawer",
+        class NavigationDrawer extends HTMLElement {
+          #controller;
+          #observer;
+          #openButton;
+          #scroller;
+          #sheet;
+
+          connectedCallback() {
+            this.#controller = new AbortController();
+            this.#scroller = this.querySelector(".Drawer-scroller");
+            this.#sheet = this.querySelector(".Drawer-sheet");
+            this.#openButton = document.querySelector(
+              `[commandfor="${CSS.escape(this.id)}"][command="show-popover"]`
+            );
+
+            this.setAttribute("data-enhanced", "");
+            this.setAttribute("popover", "manual");
+
+            this.addEventListener(
+              "command",
+              (event) => {
+                const method = event.command
+                  .replace(/^--/, "")
+                  .replace(/-\w/g, (part) => part[1].toUpperCase());
+
+                if (method !== "showPopover" && method !== "hidePopover") return;
+
+                event.preventDefault();
+                this[method]();
+              },
+              { signal: this.#controller.signal }
+            );
+
+            this.addEventListener(
+              "click",
+              (event) => {
+                if (!this.#sheet.contains(event.target)) this.hidePopover();
+              },
+              { signal: this.#controller.signal }
+            );
+
+            document.addEventListener(
+              "keydown",
+              (event) => {
+                if (event.key === "Escape" && this.matches(":popover-open")) {
+                  this.hidePopover();
+                }
+              },
+              { signal: this.#controller.signal }
+            );
+
+            const visibleThreshold = 1 / window.innerWidth;
+            this.#observer = new IntersectionObserver(
+              (entries) => {
+                const entry = entries.at(-1);
+                if (entry.intersectionRatio < visibleThreshold) this.#onClosed();
+                if (entry.intersectionRatio === 1) this.#onOpened();
+              },
+              { root: this, threshold: [visibleThreshold, 1] }
+            );
+            this.#observer.observe(this.#sheet);
+
+            if (!CSS.supports("animation-timeline: scroll()")) {
+              this.#scroller.addEventListener("scroll", () => this.#setFallbackBackdrop(), {
+                passive: true,
+                signal: this.#controller.signal,
+              });
+            }
+          }
+
+          disconnectedCallback() {
+            this.#observer?.disconnect();
+            this.#controller?.abort();
+          }
+
+          async showPopover() {
+            if (!this.matches(":popover-open")) {
+              super.showPopover();
+            }
+
+            if (!CSS.supports("scroll-initial-target", "nearest")) {
+              this.#scroller.scrollTo({ left: this.#scroller.offsetWidth, behavior: "instant" });
+              await new Promise((resolve) => {
+                requestAnimationFrame(() => requestAnimationFrame(resolve));
+              });
+            }
+
+            this.#scroller.scrollTo({ left: 0, behavior: "auto" });
+          }
+
+          hidePopover() {
+            if (!this.matches(":popover-open")) return;
+            this.#scroller.scrollTo({ left: this.#scroller.offsetWidth, behavior: "auto" });
+          }
+
+          #setFallbackBackdrop() {
+            const ratio = 1 - this.#scroller.scrollLeft / this.#sheet.offsetWidth;
+            this.style.setProperty("--drawer-backdrop", Math.max(0, Math.min(1, ratio)));
+          }
+
+          #onOpened() {
+            this.#openButton?.setAttribute("aria-expanded", "true");
+            this.#sheet.focus();
+          }
+
+          #onClosed() {
+            if (this.matches(":popover-open")) {
+              super.hidePopover();
+            }
+
+            this.#openButton?.setAttribute("aria-expanded", "false");
+          }
+        }
+      );
+    </script>
+  </body>
+</html>

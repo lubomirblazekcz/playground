@@ -87,6 +87,7 @@ export const scrollDrawer = (element, options = {}) => {
   }
 
   if (scrollDrawerState(options.scrollClose, options.scrollDirection) && !element.inert) {
+    console.log(element.close)
     toggleDrawerAttributes(element, 'close', options.snapClass)
     element.close && element.close()
   }
