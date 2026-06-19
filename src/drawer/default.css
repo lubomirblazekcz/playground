@@ -1,10 +1,10 @@
 .x-drawer {
   position: fixed;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
+  width: 100dvw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
   background-color: transparent;
   timeline-scope: --x-drawer-fade;
   animation: fade-drawer-backdrop linear both;

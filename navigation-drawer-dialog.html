@@ -691,8 +691,10 @@
             this.#observer = new IntersectionObserver(
               (entries) => {
                 const entry = entries.at(-1);
-                if (entry.intersectionRatio < visibleThreshold)
-                  this.#onClosed();
+                if (entry.intersectionRatio < visibleThreshold) {
+                  console.log(entry.intersectionRatio, visibleThreshold)
+                  this.#onClosed()
+                }
                 if (entry.intersectionRatio === 1) this.#onOpened();
               },
               { root: this, threshold: [visibleThreshold, 1] },

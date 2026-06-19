@@ -1,6 +1,6 @@
 :root,
 :host {
-  --x-drawer-content-background-color: #fff;
+  --x-drawer-content-background-color: red;
   --x-drawer-content-padding-block: 2rem;
   --x-drawer-content-padding-inline: 1.5rem;
   --x-drawer-content-inline-size: 50%;

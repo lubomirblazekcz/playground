@@ -1,3 +1,5 @@
+import {supportsScrollInitialTarget} from "../utils.js";
+
 const nextRepaint = () => {
   return new Promise((resolve) => {
     requestAnimationFrame(() => {
@@ -9,86 +11,95 @@ const nextRepaint = () => {
 }
 
 /**
- * @param {HTMLElement | Element} element
- * @param {number} distance
- * @param {'top' | 'left'} direction
- * @returns void
- */
-export const showDrawer = (element, distance = 0, direction = 'left') => {
-  element.scroll({ [direction]: distance })
-}
-
-/**
- * @param {HTMLElement | Element} element
- * @param {number} distance
- * @param {'top' | 'left'} direction
- * @returns void
- */
-export const closeDrawer = (element, distance = element.scrollWidth, direction = 'left') => {
-  element.scroll({ [direction]: distance })
-}
-
-/**
- * @param {HTMLElement | Element} element
- * @param {number} distance
- * @param {'top' | 'left'} direction
- * @returns void
- */
-export const scrollInitDrawer = async (element, distance = element.scrollWidth, direction = 'left') => {
-  element.scroll({ [direction]: distance, behavior: 'instant' })
-  await nextRepaint()
-}
-
-/**
- * @param {HTMLElement | Element} element
- * @param {'open' | 'close'} state
- * @param {string} snapClass
- * @returns void
- */
-export const toggleDrawerAttributes = (element, state = 'open', snapClass) => {
-  element.classList[state === 'open' ? 'add' : 'remove'](...snapClass.split(/\s/))
-  element.inert = state === 'close'
-  element.dispatchEvent(new CustomEvent(`x-drawer:${state}`))
-}
-
-/**
- * @param {number} scrollState
- * @param {number} scrollDirection
+ * @param {'left' | 'right' | 'top' | 'bottom'} placement
  * @returns boolean
  */
-export const scrollDrawerState = (scrollState, scrollDirection) => {
-  return scrollState ? Math.ceil(scrollDirection) >= scrollState : Math.floor(scrollDirection) <= scrollState
+export const isVerticalDrawer = (placement) => {
+  return ['top', 'bottom'].includes(placement)
 }
 
 /**
- * @param {HTMLDialogElement | Element} element
- * @param {import("./").ScrollDrawerOptions} options
+ * @param {HTMLElement | Element} element
+ * @param {'left' | 'right' | 'top' | 'bottom'} placement
+ * @param {boolean} reverse
+ * @param {'auto' | 'instant'} behavior
  * @returns void
  */
-export const scrollDrawer = (element, options = {}) => {
-  options = {
-    snapClass: 'snap-x snap-mandatory',
-    opacityProperty: '--background-color-opacity',
-    opacityRatio: 1,
-    scrollOpen: 0,
-    scrollClose: element.scrollWidth - element.clientWidth,
-    scrollSize: element.scrollWidth - element.clientWidth,
-    scrollDirection: element.scrollLeft,
-    ...options,
+export const scrollDrawer = (element, placement, reverse = false, behavior = 'auto') => {
+  const [direction, distance, closedDistance] = drawerProperties(element, placement)
+
+  element.scroll({ [direction]: reverse ? closedDistance : distance, behavior })
+}
+
+/**
+ * @param {HTMLElement | Element} element
+ * @param {'left' | 'right' | 'top' | 'bottom'} placement
+ * @returns void
+ */
+export const showDrawer = async (element, placement) => {
+  if (!supportsScrollInitialTarget) {
+    console.log(element, placement)
+    scrollDrawer(element, placement, true, 'instant')
+    await nextRepaint()
   }
 
-  element.style.setProperty(
-    options.opacityProperty,
-    `${Math.min(Math.abs((options.scrollDirection / options.scrollSize) - options.opacityRatio), 1)}`,
+  scrollDrawer(element, placement)
+}
+
+/**
+ * @param {HTMLElement | Element} element
+ * @param {'left' | 'right' | 'top' | 'bottom'} placement
+ * @returns void
+ */
+export const closeDrawer = (element, placement) => {
+  scrollDrawer(element, placement, true)
+}
+
+
+export const drawerEvents = (element, contentElement, placement, signal) => {
+  element.addEventListener('cancel', (event) => {
+    event.preventDefault()
+    closeDrawer(element.firstElementChild, placement)
+  }, { signal })
+
+  element.addEventListener('click', ({ target }) => {
+    if (!contentElement.contains(target) && !contentElement.isEqualNode(target))
+      closeDrawer(element.firstElementChild, placement)
+  }, { signal })
+
+  // element.addEventListener('toggle', (event) => {
+  //   if (element.open) {
+  //     showDrawer(event.target.firstElementChild, placement)
+  //   }
+  // })
+}
+
+/**
+ * @param {HTMLElement | Element} element
+ * @param {'left' | 'right' | 'top' | 'bottom'} placement
+ * @returns IntersectionObserver
+ */
+export const drawerObserver = (element, placement) => {
+  const visibleThreshold = 1 / (
+    isVerticalDrawer(placement) ? window.innerHeight : window.innerWidth
   )
 
-  if (scrollDrawerState(options.scrollOpen, options.scrollDirection)) {
-    toggleDrawerAttributes(element, 'open', options.snapClass)
-  }
+  return new IntersectionObserver((entries) => {
+      if (entries.at(-1).intersectionRatio < visibleThreshold) element.close()
+    }, {
+      root: element,
+      threshold: [visibleThreshold, 1]
+    }
+  )
+}
 
-  if (scrollDrawerState(options.scrollClose, options.scrollDirection) && !element.inert) {
-    console.log(element.close)
-    toggleDrawerAttributes(element, 'close', options.snapClass)
-    element.close && element.close()
-  }
+export const drawerProperties = (element, placement) => {
+  const [openedDistance, closedDistance]  = {
+    left: [0, element.offsetWidth],
+    right: [element.offsetWidth, 0],
+    top: [0, element.offsetHeight],
+    bottom: [element.offsetHeight, 0],
+  }[placement]
+
+  return [isVerticalDrawer(placement) ? 'top' : 'left', openedDistance, closedDistance]
 }

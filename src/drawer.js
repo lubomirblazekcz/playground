@@ -12,60 +12,37 @@ class Drawer extends HTMLDialogElement {
   constructor() {
     super()
     initializeController(this)
+    this.$controller = new AbortController()
   }
 
-  connectedCallback() {
-    this.addEventListener('cancel', (event) => {
-      event.preventDefault()
-      this.closeDrawer()
-    })
+  async initializeDrawer() {
+    const { drawerObserver, drawerEvents } = await import('./drawer/index.js')
+    const { signal } = this.$controller
 
-    const visibleThreshold = 1 / window.innerWidth
-    this.$observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries.at(-1)
+    drawerEvents(this, this.$content, this.$placement, signal)
 
-        if (entry.intersectionRatio < visibleThreshold) {
-          this.close()
-        }
-      },
-      { root: this, threshold: [visibleThreshold, 1] },
-    )
-
+    this.$observer = drawerObserver(this, this.$placement)
     this.$observer.observe(this.$content)
   }
 
+  partConnectedCallback(name) {
+    if (name === '$content') this.initializeDrawer()
+  }
+
+  partDisconnectedCallback(name) {
+    if (name === '$content') this.$observer?.disconnect()
+  }
+
   disconnectedCallback() {
-    this.$observer?.disconnect()
+    this.$controller?.abort()
   }
 
   async showModal() {
-    super.showModal()
-    this.showDrawer()
-  }
-
-  async showDrawer() {
     const { showDrawer } = await import('./drawer/index.js')
 
-    const [distance, distanceClosed, direction] = {
-      right: [this.scrollWidth, 0, 'left'],
-      bottom: [this.scrollHeight, 0, 'top'],
-      top: [0, this.scrollHeight, 'top'],
-    }[this.$placement] ?? []
+    super.showModal()
 
-    await showDrawer(this.firstElementChild, distance, direction)
-  }
-
-  async closeDrawer() {
-    const { closeDrawer } = await import('./drawer/index.js')
-
-    const [distance, direction] = {
-      right: [0, 'left'],
-      bottom: [0, 'top'],
-      top: [this.scrollHeight, 'top'],
-    }[this.$placement] ?? []
-
-    await closeDrawer(this.firstElementChild, distance, direction)
+    showDrawer(this.firstElementChild, this.$placement)
   }
 }
 

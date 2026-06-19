@@ -2,18 +2,15 @@ import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 
 const modulePreloadRemover = {
-  name: 'module-preload-remover',
+  name: 'remove-vite-preload',
+  apply: 'build',
   configResolved(config) {
-    if (config.command !== 'build') return
-
-    const plugin = config.plugins.findIndex(
-      p => p.name === 'vite:build-import-analysis',
-    )
-
-    config.plugins.splice(plugin, 1)
-  },
-  renderChunk(code) {
-    return 'const __VITE_IS_MODERN__=true;' + code
+    const plugin = config.plugins.find(
+      (p) => p.name === 'native:import-analysis-build',
+    );
+    if (plugin) {
+      plugin.applyToEnvironment = undefined;
+    }
   },
 }
 
@@ -24,5 +21,18 @@ export default defineConfig({
   ],
   build: {
     modulePreload: false,
+    rolldownOptions: {
+      output:  {
+        codeSplitting: {
+          groups: [
+            {
+              name: 'webuum',
+              test: /node_modules[\\/]webuum(?:[\\/]|$)/,
+              priority: 30,
+            }
+          ]
+        }
+      }
+    }
   },
 })
