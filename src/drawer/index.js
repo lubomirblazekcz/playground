@@ -1,14 +1,4 @@
-import {supportsScrollInitialTarget} from "../utils.js";
-
-const nextRepaint = () => {
-  return new Promise((resolve) => {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        resolve()
-      })
-    })
-  })
-}
+import { supportsScrollInitialTarget, nextRepaint } from "../utils.js";
 
 /**
  * @param {'left' | 'right' | 'top' | 'bottom'} placement
@@ -38,7 +28,6 @@ export const scrollDrawer = (element, placement, reverse = false, behavior = 'au
  */
 export const showDrawer = async (element, placement) => {
   if (!supportsScrollInitialTarget) {
-    console.log(element, placement)
     scrollDrawer(element, placement, true, 'instant')
     await nextRepaint()
   }
@@ -55,7 +44,13 @@ export const closeDrawer = (element, placement) => {
   scrollDrawer(element, placement, true)
 }
 
-
+/**
+ * @param {HTMLElement | Element} element
+ * @param {HTMLElement | Element} contentElement
+ * @param {AbortSignal} signal
+ * @param {'left' | 'right' | 'top' | 'bottom'} placement
+ * @returns void
+ */
 export const drawerEvents = (element, contentElement, placement, signal) => {
   element.addEventListener('cancel', (event) => {
     event.preventDefault()
@@ -66,12 +61,6 @@ export const drawerEvents = (element, contentElement, placement, signal) => {
     if (!contentElement.contains(target) && !contentElement.isEqualNode(target))
       closeDrawer(element.firstElementChild, placement)
   }, { signal })
-
-  // element.addEventListener('toggle', (event) => {
-  //   if (element.open) {
-  //     showDrawer(event.target.firstElementChild, placement)
-  //   }
-  // })
 }
 
 /**
@@ -93,6 +82,11 @@ export const drawerObserver = (element, placement) => {
   )
 }
 
+/**
+ * @param {HTMLElement | Element} element
+ * @param {'left' | 'right' | 'top' | 'bottom'} placement
+ * @returns {['top' | 'left', number, number]}
+ */
 export const drawerProperties = (element, placement) => {
   const [openedDistance, closedDistance]  = {
     left: [0, element.offsetWidth],

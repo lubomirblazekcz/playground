@@ -1,6 +1,6 @@
 import { initializeController } from 'webuum'
 
-class Drawer extends HTMLDialogElement {
+customElements.define('x-drawer', class Drawer extends HTMLDialogElement {
   static parts = {
     $content: null,
   }
@@ -15,26 +15,23 @@ class Drawer extends HTMLDialogElement {
     this.$controller = new AbortController()
   }
 
-  async initializeDrawer() {
-    const { drawerObserver, drawerEvents } = await import('./drawer/index.js')
-    const { signal } = this.$controller
+  async partConnectedCallback(name) {
+    if (name === '$content') {
+      const { drawerObserver, drawerEvents } = await import('./drawer/index.js')
+      const { signal } = this.$controller
 
-    drawerEvents(this, this.$content, this.$placement, signal)
+      drawerEvents(this, this.$content, this.$placement, signal)
 
-    this.$observer = drawerObserver(this, this.$placement)
-    this.$observer.observe(this.$content)
-  }
-
-  partConnectedCallback(name) {
-    if (name === '$content') this.initializeDrawer()
+      this.$observer = drawerObserver(this, this.$placement)
+      this.$observer.observe(this.$content)
+    }
   }
 
   partDisconnectedCallback(name) {
-    if (name === '$content') this.$observer?.disconnect()
-  }
-
-  disconnectedCallback() {
-    this.$controller?.abort()
+    if (name === '$content') {
+      this.$observer?.disconnect()
+      this.$controller?.abort()
+    }
   }
 
   async showModal() {
@@ -44,6 +41,4 @@ class Drawer extends HTMLDialogElement {
 
     showDrawer(this.firstElementChild, this.$placement)
   }
-}
-
-customElements.define('x-drawer', Drawer, { extends: 'dialog' })
+}, { extends: 'dialog' })
