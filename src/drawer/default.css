@@ -13,6 +13,10 @@
   &::backdrop {
     background-color: rgb(0 0 0);
     opacity: calc(var(--x-drawer-backdrop) * 0.8);
+
+    @supports not (animation-timeline: --x-drawer-fade) {
+      --x-drawer-backdrop: 1;
+    }
   }
 }
 
