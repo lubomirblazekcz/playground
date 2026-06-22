@@ -64,7 +64,7 @@ export const drawerEvents = (element, contentElement, placement, signal) => {
 }
 
 /**
- * @param {HTMLElement | Element} element
+ * @param {HTMLDialogElement | Element} element
  * @param {'left' | 'right' | 'top' | 'bottom'} placement
  * @returns IntersectionObserver
  */
