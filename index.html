@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" style="min-height: 200vh">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -8,7 +8,7 @@
     <link href="/src/style.css" rel="stylesheet">
     <script src="/src/main.js" type="module" async></script>
   </head>
-  <body class="p-4 pt-46 min-h-[300vh] overflow-hidden" is="x-app">
+  <body class="p-4 pt-46 min-h-[300vh] overflow-x-clip" is="x-app">
     <main class="flex justify-center gap-3">
       <div class="relative w-fit">
         <button
@@ -89,7 +89,7 @@
           Show Drawer Left
         </button>
 
-        <dialog class="x-drawer" is="x-drawer" id="defaultDrawerLeft" closedby="any">
+        <dialog class="x-drawer noscript:starting:-translate-x-full noscript:not-open:-translate-x-full" is="x-drawer" id="defaultDrawerLeft" closedby="any">
           <div class="x-drawer-scroller snap-x snap-mandatory">
             <nav class="x-drawer-content" data-x-drawer-part="content">
               Drawer content
@@ -107,7 +107,7 @@
           Show Drawer Right
         </button>
 
-        <dialog class="x-drawer" style="animation-direction: reverse" is="x-drawer" id="defaultDrawerRight" closedby="any" data-placement="right">
+        <dialog class="x-drawer noscript:starting:translate-x-full noscript:not-open:translate-x-full noscript:ms-auto" style="animation-direction: reverse" is="x-drawer" id="defaultDrawerRight" closedby="any" data-placement="right">
           <div class="x-drawer-scroller after:order-first snap-x snap-mandatory">
             <nav class="x-drawer-content" data-x-drawer-part="content">
               Drawer content
@@ -125,9 +125,9 @@
           Show Drawer Bottom
         </button>
 
-        <dialog class="x-drawer" style="animation-direction: reverse" is="x-drawer" id="defaultDrawerBottom" closedby="any" data-placement="bottom">
+        <dialog class="x-drawer noscript:starting:translate-y-full noscript:not-open:translate-y-full noscript:mbs-auto" style="animation-direction: reverse" is="x-drawer" id="defaultDrawerBottom" closedby="any" data-placement="bottom">
           <div class="x-drawer-scroller flex flex-col after:order-first snap-y snap-mandatory">
-            <nav class="x-drawer-content" data-x-drawer-part="content" style="--x-drawer-content-inline-size: 100%;--x-drawer-content-block-size: calc(100vh - 4rem);">
+            <nav class="x-drawer-content" data-x-drawer-part="content" style="--x-drawer-content-inline-size: 100dvw;--x-drawer-content-block-size: calc(100vh - 4rem);">
               Drawer content
               <button command="request-close" commandfor="defaultDrawerBottom">Close</button>
             </nav>
@@ -143,9 +143,9 @@
           Show Drawer Top
         </button>
 
-        <dialog class="x-drawer" is="x-drawer" id="defaultDrawerTop" closedby="any" data-placement="top">
+        <dialog class="x-drawer noscript:starting:-translate-y-full noscript:not-open:-translate-y-full" is="x-drawer" id="defaultDrawerTop" closedby="any" data-placement="top">
           <div class="x-drawer-scroller flex flex-col snap-y snap-mandatory">
-            <nav class="x-drawer-content" data-x-drawer-part="content" style="--x-drawer-content-inline-size: 100%;--x-drawer-content-block-size: calc(100vh - 4rem);">
+            <nav class="x-drawer-content" data-x-drawer-part="content" style="--x-drawer-content-inline-size: 100dvw;--x-drawer-content-block-size: calc(100vh - 4rem);">
               Drawer content
               <button command="request-close" commandfor="defaultDrawerTop">Close</button>
             </nav>

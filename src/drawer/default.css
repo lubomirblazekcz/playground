@@ -1,4 +1,6 @@
 .x-drawer {
+  --default-transition-duration: 0.5s;
+
   position: fixed;
   inset: 0;
   width: 100dvw;
@@ -10,11 +12,44 @@
   animation: fade-drawer-backdrop linear both;
   animation-timeline: --x-drawer-fade;
 
+  @media (scripting: none) {
+    width: fit-content;
+    height: fit-content;
+
+    &,
+    &::backdrop {
+      transition-property: var(--default-transition-property);
+      transition-timing-function: var(--ease-in-out);
+      transition-duration: var(--default-transition-duration);
+      transition-behavior: allow-discrete;
+    }
+
+    &::backdrop {
+      --x-drawer-backdrop: 1;
+    }
+
+    &:not([open]) {
+      &::backdrop {
+        --x-drawer-backdrop: 0;
+      }
+    }
+
+    @starting-style {
+      &[open] {
+        opacity: 0;
+
+        &::backdrop {
+          --x-drawer-backdrop: 0;
+        }
+      }
+    }
+  }
+
   &::backdrop {
     background-color: rgb(0 0 0);
     opacity: calc(var(--x-drawer-backdrop) * 0.8);
 
-    @supports not (animation-timeline: --x-drawer-fade) {
+    @supports not (animation-timeline: --x) {
       --x-drawer-backdrop: 1;
     }
   }

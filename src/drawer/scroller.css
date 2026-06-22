@@ -1,7 +1,7 @@
 .x-drawer-scroller {
   display: flex;
-  width: 100dvw;
-  height: 100svh;
+  width: inherit;
+  height: inherit;
   overflow: auto hidden;
   scrollbar-width: none;
   scroll-behavior: smooth;
@@ -18,14 +18,22 @@
     min-inline-size: 100vw;
     scroll-snap-align: end;
     scroll-initial-target: nearest;
+
+    @media (scripting: none) {
+      content: normal;
+    }
   }
 
-  &.flex-col {
+  &:where(.snap-y) {
     overflow: hidden auto;
     scroll-timeline: --x-drawer-fade y;
 
     &::after {
       min-block-size: 100dvh;
     }
+  }
+
+  @media (scripting: none) {
+    overflow: clip;
   }
 }
